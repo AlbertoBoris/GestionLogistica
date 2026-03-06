@@ -1,0 +1,40 @@
+﻿@model GestionLogisticaTI.ViewModels.ProductoViewModel
+@Html.ValidationSummary(true)
+
+<h2>Registrar Producto</h2>
+
+<form method="post">
+
+    <div class="form-group">
+        <label>Nombre</label>
+        @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>Descripción</label>
+        @Html.TextBoxFor(m => m.Descripcion, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Descripcion, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>Stock Mínimo</label>
+        @Html.TextBoxFor(m => m.StockMinimo, new { @class = "form-control", type = "number" })
+        @Html.ValidationMessageFor(m => m.StockMinimo, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>Ubicación</label>
+        @Html.TextBoxFor(m => m.Ubicacion, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Ubicacion, "", new { @class = "text-danger" })
+    </div>
+
+    <br>
+
+    <button class="btn btn-success">Guardar</button>
+
+    <a href="@Url.Action("Index")" class="btn btn-secondary">
+        Cancelar
+    </a>
+
+</form>

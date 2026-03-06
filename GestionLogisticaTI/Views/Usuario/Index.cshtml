@@ -1,0 +1,46 @@
+﻿@model List<GestionLogisticaTI.ViewModels.UsuarioViewModel>
+
+<h2>Administrar Usuarios</h2>
+
+<a href="@Url.Action("Create")" class="btn btn-success mb-3">
+    Nuevo Usuario
+</a>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nombre</td>
+                <td>@item.Correo</td>
+                <td>@item.NombreRol</td>
+                <td>@item.Estado</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = item.IdUsuario })"
+                       class="btn btn-primary btn-sm">
+                        Editar
+                    </a>
+
+                    <a href="@Url.Action("CambiarEstado", new { id = item.IdUsuario })"
+                       class="btn btn-warning btn-sm">
+                        Activar/Inactivar
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

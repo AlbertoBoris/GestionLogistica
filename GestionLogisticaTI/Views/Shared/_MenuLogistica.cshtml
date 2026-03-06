@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "Menu Logistica";
+}
+
+<div class="sidebar-title">
+    <i class="bi bi-box-seam"></i>
+    Área de Logística
+</div>
+
+<ul class="nav flex-column">
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","Producto")">
+            <i class="bi bi-box"></i>
+            Gestionar Productos
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("RegistrarIngreso","Ingreso")">
+            <i class="bi bi-arrow-down-circle"></i>
+            Registrar Ingreso
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Registrar","Ajuste")">
+            <i class="bi bi-tools"></i>
+            Ajuste de Inventario
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","AutorizarPedido")">
+            <i class="bi bi-check2-square"></i>
+            Autorizar Pedidos
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Historial","Movimiento")">
+            <i class="bi bi-clock-history"></i>
+            Historial de Movimientos
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","HistorialDespacho")">
+            <i class="bi bi-truck"></i>
+            Historial de Despachos
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","Stock")">
+            <i class="bi bi-bar-chart-line"></i>
+            Consultar Stock
+        </a>
+    </li>
+
+</ul>

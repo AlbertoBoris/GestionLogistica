@@ -1,0 +1,79 @@
+﻿@model List<GestionLogisticaTI.ViewModels.PedidoListViewModel>
+
+<h2>Gestión de Pedidos</h2>
+
+@using (Html.BeginForm("Index", "Pedido", FormMethod.Get))
+{
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            <label>Cliente</label>
+            @Html.DropDownList("idCliente",
+                     (List<SelectListItem>)ViewBag.Clientes,
+                     "-- Todos --",
+                     new { @class = "form-control" })
+        </div>
+
+        <div class="col-md-3">
+            <label>Estado</label>
+            <select name="estado" class="form-control">
+                <option value="">-- Todos --</option>
+                <option value="Pendiente" @(ViewBag.EstadoSeleccionado == "Pendiente" ? "selected" : "")>Pendiente</option>
+                <option value="Autorizado" @(ViewBag.EstadoSeleccionado == "Autorizado" ? "selected" : "")>Autorizado</option>
+                <option value="Despachado" @(ViewBag.EstadoSeleccionado == "Despachado" ? "selected" : "")>Despachado</option>
+                <option value="Cancelado" @(ViewBag.EstadoSeleccionado == "Cancelado" ? "selected" : "")>Cancelado</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">
+                Buscar
+            </button>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                Limpiar
+            </a>
+        </div>
+
+    </div>
+}
+
+<a href="@Url.Action("Create")" class="btn btn-primary">Nuevo Pedido</a>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Estado</th>
+            <th>Items</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdPedido</td>
+                <td>@item.Fecha.ToShortDateString()</td>
+                <td>@item.Cliente</td>
+                <td>@item.Estado</td>
+                <td>@item.CantidadItems</td>
+                <td>
+                    @Html.ActionLink("Ver", "Detalle", new { id = item.IdPedido }) |
+
+                    @if (item.Estado == "Pendiente")
+                    {
+                        @Html.ActionLink("Editar", "Edit", new { id = item.IdPedido })
+                        <a>|</a>
+                        @Html.ActionLink("Cancelar", "Cancelar", new { id = item.IdPedido },
+                             new { onclick = "return confirm('¿Seguro que desea cancelar?');" })
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

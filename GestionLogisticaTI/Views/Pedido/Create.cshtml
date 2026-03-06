@@ -1,0 +1,98 @@
+﻿@model GestionLogisticaTI.ViewModels.PedidoCreateViewModel
+
+@{
+    ViewBag.Title = "Nuevo Pedido";
+}
+
+<h2>Registrar Pedido</h2>
+
+@using (Html.BeginForm())
+{
+    <div class="row">
+        <div class="col-md-3">
+            <label>Cliente</label>
+            @Html.DropDownListFor(m => m.IdCliente, Model.Clientes, "-- Seleccione --", new { @class = "form-control" })
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <a href="@Url.Action("Create", "Cliente", new { returnUrl = Url.Action("Create", "Pedido") })"
+               class="btn btn-success">
+                Agregar Cliente
+            </a>
+        </div>
+    </div>
+        <hr />
+
+        <h4>Agregar Productos</h4>
+
+        <div class="row">
+            <div class="col-md-5">
+                @Html.DropDownList("ProductoSeleccionado", Model.Productos, "-- Producto --", new { @class = "form-control", id = "productoSelect" })
+            </div>
+
+            <div class="col-md-3">
+                <input type="number" id="cantidadInput" class="form-control" placeholder="Cantidad" min="1" />
+            </div>
+
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success" onclick="agregarProducto()">Agregar</button>
+            </div>
+        </div>
+
+        <br />
+
+        <table class="table table-bordered" id="tablaDetalle">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <br />
+
+        <button type="submit" class="btn btn-primary">Guardar Pedido</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Cancelar</a>
+        }
+
+        @section Scripts {
+            <script>var index = 0;</script>
+            <script>
+                function agregarProducto() {
+                    var productoSelect = document.getElementById("productoSelect");
+                    var cantidad = document.getElementById("cantidadInput").value;
+
+                    if (productoSelect.value === "" || cantidad <= 0 || cantidad === "") {
+                        alert("Seleccione producto y cantidad válida");
+                        return;
+                    }
+
+                    var productoTexto = productoSelect.options[productoSelect.selectedIndex].text;
+                    var productoValor = productoSelect.value;
+
+                    var tabla = document.getElementById("tablaDetalle")
+                        .getElementsByTagName("tbody")[0];
+
+                    var fila = tabla.insertRow();
+
+                    fila.innerHTML =
+                        `<td>
+                                    ${productoTexto}
+                                    <input type="hidden" name="Detalles[${index}].IdProducto" value="${productoValor}" />
+                                 </td>
+                                 <td>
+                                    ${cantidad}
+                                    <input type="hidden" name="Detalles[${index}].Cantidad" value="${cantidad}" />
+                                 </td>
+                                 <td>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">
+                                        X
+                                    </button>
+                                 </td>`;
+
+                    index++;
+                    document.getElementById("cantidadInput").value = "";
+                }</script>
+        }

@@ -1,0 +1,85 @@
+﻿@model List<GestionLogisticaTI.ViewModels.ClienteViewModel>
+
+<h2>Gestión de Clientes</h2>
+
+@using (Html.BeginForm("Index", "Cliente", FormMethod.Get))
+{
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text"
+                   name="nombre"
+                   value="@ViewBag.FiltroNombre"
+                   class="form-control"
+                   placeholder="Buscar por nombre" />
+        </div>
+
+        <div class="col-md-3">
+            <select name="estado" class="form-control">
+                <option value="">-- Todos --</option>
+                <option value="Activo" @(ViewBag.FiltroEstado == "Activo" ? "selected" : "")>Activo</option>
+                <option value="Inactivo" @(ViewBag.FiltroEstado == "Inactivo" ? "selected" : "")>Inactivo</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">
+                Buscar
+            </button>
+        </div>
+
+        <div class="col-md-2">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                Limpiar
+            </a>
+        </div>
+    </div>
+}
+
+<a href="@Url.Action("Create")" class="btn btn-success mb-3">
+    Nuevo Cliente
+</a>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Nombre</th>
+            <th>RUC / DNI</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="@(item.EsActivo ? "" : "table-secondary")">
+                <td>@item.Nombre</td>
+                <td>@item.RucDni</td>
+                <td>@item.Telefono</td>
+                <td>@item.Direccion</td>
+                <td>
+                    @if (item.EsActivo)
+                    {
+                        <span class="badge bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactivo</span>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit",
+                        new { id = item.IdCliente },
+                        new { @class = "btn btn-primary btn-sm" })
+
+                    <a href="@Url.Action("CambiarEstado", new { id = item.IdCliente })"
+                       class="btn btn-warning btn-sm"
+                       onclick="return confirm('¿Desea cambiar el estado del cliente?');">
+                        Cambiar Estado
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

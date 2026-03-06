@@ -1,0 +1,168 @@
+﻿@model List<GestionLogisticaTI.ViewModels.ProductoViewModel>
+
+<h2 class="mb-4">
+    <i class="bi bi-box-seam"></i>
+    Gestión de Productos
+</h2>
+
+<form method="get">
+
+    <div class="card mb-4">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <input type="text"
+                           name="nombre"
+                           class="form-control"
+                           placeholder="Buscar producto" />
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <select name="estado" class="form-control">
+
+                        <option value="">Todos</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-5">
+
+                    <button class="btn btn-primary">
+                        <i class="bi bi-search"></i>
+                        Buscar
+                    </button>
+
+                    <a href="@Url.Action("Create")"
+                       class="btn btn-success">
+
+                        <i class="bi bi-plus-circle"></i>
+                        Nuevo Producto
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
+
+
+<table id="tablaProductos" class="table table-hover table-striped align-middle">
+
+    <thead class="table-dark">
+
+        <tr>
+
+            <th>Nombre</th>
+            <th>Stock</th>
+            <th>Stock Min</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+            <th width="180">Acciones</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.Nombre</td>
+
+                <td>
+
+                    @if (item.StockActual <= item.StockMinimo)
+                    {
+                        <span class="badge bg-danger">
+                            @item.StockActual
+                        </span>
+                    }
+                    else
+                    {
+                        @item.StockActual
+                    }
+
+                </td>
+
+                <td>@item.StockMinimo</td>
+
+                <td>@item.Ubicacion</td>
+
+                <td>
+
+                    @if (item.Estado == "Activo")
+                    {
+                        <span class="badge bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactivo</span>
+                    }
+
+                </td>
+
+                <td>
+
+                    <a href="@Url.Action("Edit", new { id = item.IdProducto })"
+                       class="btn btn-warning btn-sm">
+
+                        <i class="bi bi-pencil"></i>
+
+                    </a>
+
+                    <a href="@Url.Action("CambiarEstado", new { id = item.IdProducto })"
+                       class="btn btn-secondary btn-sm">
+
+                        <i class="bi bi-arrow-repeat"></i>
+
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+@section scripts {
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#tablaProductos').DataTable({
+
+                pageLength: 10,
+
+                searching: false,      // quita buscador
+                lengthChange: false,   // quita selector de registros
+
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
+
+            });
+
+        });
+
+    </script>
+
+}

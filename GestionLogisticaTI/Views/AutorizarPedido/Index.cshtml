@@ -1,0 +1,62 @@
+﻿@model List<GestionLogisticaTI.ViewModels.PedidoAutorizacionViewModel>
+
+<h2>Autorizar Pedidos</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>ID Pedido</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Items</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.IdPedido</td>
+                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                <td>@item.Cliente</td>
+                <td>@item.CantidadItems</td>
+
+                <td>
+
+                    <a href="@Url.Action("Detalle", new { id = item.IdPedido })"
+                       class="btn btn-info btn-sm">
+                        Ver Detalle
+                    </a>
+
+                    <a href="@Url.Action("Autorizar", new { id = item.IdPedido })"
+                       class="btn btn-success btn-sm"
+                       onclick="return confirm('¿Desea autorizar este pedido?');">
+                        Autorizar
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

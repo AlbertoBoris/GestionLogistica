@@ -1,0 +1,61 @@
+﻿@model GestionLogisticaTI.ViewModels.PedidoDespachoDetalleViewModel
+
+<h2>Confirmar Despacho</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p><strong>ID Pedido:</strong> @Model.IdPedido</p>
+        <p><strong>Fecha:</strong> @Model.Fecha.ToShortDateString()</p>
+        @if (Model.FechaDespacho != null)
+        {
+            <p>
+                <strong>Fecha Despacho:</strong>
+                @Model.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
+            </p>
+        }
+        <p><strong>Cliente:</strong> @Model.Cliente</p>
+    </div>
+</div>
+
+<h4>Productos del Pedido</h4>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Detalles)
+        {
+            <tr>
+                <td>@item.Producto</td>
+                <td>@item.Cantidad</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+@using (Html.BeginForm("Confirmar", "Despacho", FormMethod.Post))
+{
+    <input type="hidden" name="idPedido" value="@Model.IdPedido" />
+
+    <div class="form-group mb-3">
+        <label>Número de Guía</label>
+        <input type="text"
+               name="numeroDocumento"
+               class="form-control"
+               required />
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        Confirmar Despacho
+    </button>
+
+    <a href="@Url.Action("Index")" class="btn btn-secondary">
+        Volver
+    </a>
+}

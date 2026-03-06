@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Menu JefeArea";
+}
+
+<div class="sidebar-title">
+    <i class="bi bi-person-badge"></i>
+    Jefe de Área
+</div>
+
+<ul class="nav flex-column">
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","ReporteLogistico")">
+            <i class="bi bi-bar-chart"></i>
+            Generar Reporte Logístico
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Historial","Movimiento")">
+            <i class="bi bi-clock-history"></i>
+            Historial de Movimientos
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","Stock")">
+            <i class="bi bi-box"></i>
+            Consultar Stock
+        </a>
+    </li>
+
+</ul>

@@ -1,0 +1,179 @@
+﻿@{
+    var rol = Session["Rol"]?.ToString();
+    var nombre = Session["Nombre"]?.ToString();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - Gestión Logística TI</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
+
+    <style>
+
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* NAVBAR */
+
+        .navbar-custom {
+            background-color: #1f2937;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            min-height: 100vh;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #111827;
+        }
+
+        .sidebar .nav-link {
+            color: #374151;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+            .sidebar .nav-link:hover {
+                background-color: #e5e7eb;
+                color: #111827;
+            }
+
+            .sidebar .nav-link i {
+                margin-right: 8px;
+            }
+
+        /* CONTENIDO */
+
+        .content-wrapper {
+            padding: 25px;
+        }
+
+        .content-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- NAVBAR SUPERIOR -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+
+        <div class="container-fluid">
+
+            <span class="navbar-brand">
+                <i class="bi bi-hdd-network"></i>
+                Gestión Logística TI
+            </span>
+
+            <div class="d-flex align-items-center text-white">
+
+                @if (Session["Nombre"] != null)
+                {
+                    <span class="me-3">
+                        <i class="bi bi-person-circle"></i>
+                        Hola, @nombre
+                    </span>
+
+                    @Html.ActionLink("Cerrar Sesión", "Logout", "Account", null,
+                                             new { @class = "btn btn-sm btn-danger" })
+                }
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <!-- SIDEBAR -->
+
+            <div class="col-2 sidebar p-3">
+
+                @if (rol == "Administrador")
+                {
+                    @Html.Partial("_MenuAdmin")
+                }
+                else if (rol == "JefeArea")
+                {
+                    @Html.Partial("_MenuJefeArea")
+                }
+                else if (rol == "Logistica")
+                {
+                    @Html.Partial("_MenuLogistica")
+                }
+                else if (rol == "Ventas")
+                {
+                    @Html.Partial("_MenuVentas")
+                }
+                else if (rol == "Almacen")
+                {
+                    @Html.Partial("_MenuAlmacen")
+                }
+
+            </div>
+
+            <!-- CONTENIDO -->
+
+            <div class="col-10 content-wrapper">
+
+                <div class="content-card">
+
+                    @RenderBody()
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+    @RenderSection("scripts", required: false)
+
+</body> 
+
+</html>

@@ -1,0 +1,68 @@
+﻿@model GestionLogisticaTI.ViewModels.PedidoAutorizacionViewModel
+
+<h2>Detalle del Pedido</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+
+        <p><strong>ID Pedido:</strong> @Model.IdPedido</p>
+        <p><strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy")</p>
+        <p><strong>Cliente:</strong> @Model.Cliente</p>
+
+    </div>
+</div>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad Pedida</th>
+            <th>Stock Disponible</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in ViewBag.Detalles)
+        {
+            <tr>
+
+                <td>@item.Producto</td>
+
+                <td>@item.Cantidad</td>
+
+                <td>@item.StockActual</td>
+
+                <td>
+
+                    @if (item.StockActual >= item.Cantidad)
+                    {
+                        <span class="text-success">Disponible</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Sin stock</span>
+                    }
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<a href="@Url.Action("Autorizar", new { id = Model.IdPedido })"
+   class="btn btn-success"
+   onclick="return confirm('¿Autorizar este pedido?');">
+
+    Autorizar Pedido
+
+</a>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">
+    Volver
+</a>

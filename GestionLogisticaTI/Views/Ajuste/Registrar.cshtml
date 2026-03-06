@@ -1,0 +1,196 @@
+﻿
+@model GestionLogisticaTI.ViewModels.AjusteInventarioViewModel
+
+<h2>Ajuste de Inventario</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<form method="post">
+
+    <div class="form-group">
+        <label>Número de Documento</label>
+        <input name="NumeroDocumento" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Motivo del ajuste</label>
+        <input name="Motivo" class="form-control" required />
+    </div>
+
+    <hr>
+
+    <h4>Productos</h4>
+
+    <table class="table" id="tablaAjuste">
+
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Stock Actual</th>
+                <th>Ajuste</th>
+                <th>Stock Final</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>
+                    <select name="Detalles[0].IdProducto"
+                            class="form-control productoSelect">
+                        @foreach (var p in Model.Productos)
+                        {
+                            <option value="@p.IdProducto">@p.Nombre</option>
+                        }
+                    </select>
+                </td>
+
+                <td>
+                    <input type="text" class="form-control stockActual" readonly />
+                </td>
+
+                <td>
+                    <input type="number"
+                           name="Detalles[0].CantidadAjuste"
+                           class="form-control ajusteCantidad" />
+                </td>
+
+                <td>
+                    <input type="text" class="form-control stockFinal" readonly />
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-danger eliminarFila">X</button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <button type="button" class="btn btn-secondary" id="btnAgregar">
+        Agregar Producto
+    </button>
+
+    <br><br>
+
+    <button class="btn btn-warning">
+        Registrar Ajuste
+    </button>
+
+</form>
+
+<script>
+
+let index = 1;
+
+document.getElementById("btnAgregar").addEventListener("click", function(){
+
+let tabla = document.querySelector("#tablaAjuste tbody");
+
+let fila = `
+<tr>
+
+<td>
+<select name="Detalles[${index}].IdProducto"
+class="form-control productoSelect">
+
+@foreach(var p in Model.Productos)
+{
+<text>
+<option value="@p.IdProducto">@p.Nombre</option>
+</text>
+}
+
+</select>
+</td>
+
+<td>
+<input type="text"
+class="form-control stockActual"
+readonly />
+</td>
+
+<td>
+<input type="number"
+name="Detalles[${index}].CantidadAjuste"
+class="form-control ajusteCantidad"/>
+</td>
+
+<td>
+<input type="text"
+class="form-control stockFinal"
+readonly />
+</td>
+
+<td>
+<button type="button"
+class="btn btn-danger eliminarFila">X</button>
+</td>
+
+</tr>`;
+
+tabla.insertAdjacentHTML("beforeend", fila);
+
+index++;
+
+});
+
+document.addEventListener("click", function(e){
+
+if(e.target.classList.contains("eliminarFila"))
+{
+e.target.closest("tr").remove();
+}
+
+});
+
+</script>
+
+<script>
+
+    document.addEventListener("change", function (e) {
+
+        if (e.target.classList.contains("productoSelect")) {
+            let fila = e.target.closest("tr");
+
+            let idProducto = e.target.value;
+
+            fetch("/Ajuste/ObtenerStock?idProducto=" + idProducto)
+                .then(res => res.json())
+                .then(stock => {
+
+                    fila.querySelector(".stockActual").value = stock;
+
+                    let ajuste = fila.querySelector(".ajusteCantidad").value || 0;
+
+                    fila.querySelector(".stockFinal").value =
+                        parseInt(stock) + parseInt(ajuste);
+
+                });
+        }
+
+    });
+
+    document.addEventListener("input", function (e) {
+
+        if (e.target.classList.contains("ajusteCantidad")) {
+            let fila = e.target.closest("tr");
+
+            let stock = parseInt(fila.querySelector(".stockActual").value || 0);
+            let ajuste = parseInt(e.target.value || 0);
+
+            fila.querySelector(".stockFinal").value = stock + ajuste;
+        }
+
+    });
+
+</script>

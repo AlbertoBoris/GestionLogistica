@@ -1,0 +1,48 @@
+﻿
+@model List<GestionLogisticaTI.ViewModels.PedidoDespachoViewModel>
+
+<h2>Confirmar Despacho</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">@TempData["Mensaje"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID Pedido</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Items</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <form method="post" action="@Url.Action("Confirmar")">
+                <td>
+                    @item.IdPedido
+                    <input type="hidden" name="idPedido" value="@item.IdPedido" />
+                </td>
+                <td>@item.Fecha.ToShortDateString()</td>
+                <td>@item.Cliente</td>
+                <td>@item.CantidadItems</td>
+                <td>
+                    <a href="@Url.Action("Detalle", new { id = item.IdPedido })"
+                       class="btn btn-primary">
+                        Confirmar Despacho
+                    </a>
+                </td>
+                </form>
+            </tr>
+        }
+    </tbody>
+</table>

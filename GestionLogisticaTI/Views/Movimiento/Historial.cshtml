@@ -1,0 +1,78 @@
+﻿@model List<GestionLogisticaTI.ViewModels.MovimientoHistorialViewModel>
+
+<h2>Historial de Movimientos</h2>
+
+<form method="get">
+
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <select name="tipoMovimiento" class="form-control">
+
+                <option value="">Todos</option>
+                <option value="Ingreso">Ingreso</option>
+                <option value="Salida">Salida</option>
+                <option value="Ajuste">Ajuste</option>
+
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <input type="date" name="fechaInicio" class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <input type="date" name="fechaFin" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <input type="text" name="producto" class="form-control" placeholder="Buscar producto" />
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary">Buscar</button>
+        </div>
+
+    </div>
+
+</form>
+
+
+<table class="table table-bordered table-striped">
+
+    <thead>
+
+        <tr>
+
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Documento</th>
+            <th>Motivo</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Usuario</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@item.TipoMovimiento</td>
+                <td>@item.NumeroDocumento</td>
+                <td>@item.Motivo</td>
+                <td>@item.Producto</td>
+                <td>@item.Cantidad</td>
+                <td>@item.Usuario</td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>

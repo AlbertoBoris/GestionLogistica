@@ -1,0 +1,75 @@
+﻿@model GestionLogisticaTI.ViewModels.ReporteLogisticoViewModel
+
+<h2>Generar Reporte Logístico</h2>
+
+@using (Html.BeginForm("Index", "ReporteLogistico", FormMethod.Get))
+{
+    <div class="row mb-3">
+
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.TipoReporte,
+                               Model.TiposReporte,
+                               "-- Seleccione Reporte --",
+                               new { @class = "form-control" })
+        </div>
+
+        <div class="col-md-2">
+            <input type="date"
+                   name="fechaInicio"
+                   value="@(Model.FechaInicio?.ToString("yyyy-MM-dd"))"
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <input type="date"
+                   name="fechaFin"
+                   value="@(Model.FechaFin?.ToString("yyyy-MM-dd"))"
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">
+                Generar
+            </button>
+        </div>
+
+        <div class="col-md-2">
+            @if (Model.Resultados != null && Model.Resultados.Count > 0)
+            {
+                <a class="btn btn-success mb-3"
+                   href="@Url.Action("DescargarPDF","ReporteLogistico",
+       new { tipoReporte = Model.TipoReporte,
+             fechaInicio = Model.FechaInicio,
+             fechaFin = Model.FechaFin })">
+
+                    Descargar PDF
+                </a>
+            }
+        </div>
+    </div>
+}
+
+@if (Model.Resultados != null && Model.Resultados.Count > 0)
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                @foreach (var col in ((IDictionary<string, object>)Model.Resultados[0]).Keys)
+                {
+                    <th>@col</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.Resultados)
+            {
+                <tr>
+                    @foreach (var value in ((IDictionary<string, object>)row).Values)
+                    {
+                        <td>@value</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

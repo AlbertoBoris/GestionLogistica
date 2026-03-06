@@ -1,0 +1,43 @@
+﻿@model GestionLogisticaTI.ViewModels.DespachoDetalleViewModel
+
+<h2>Detalle de Despacho</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p><strong>ID Pedido:</strong> @Model.IdPedido</p>
+        <p><strong>Cliente:</strong> @Model.Cliente</p>
+        <p><strong>Fecha Pedido:</strong> @Model.Fecha.ToShortDateString()</p>
+
+        @if (Model.FechaDespacho.HasValue)
+        {
+            <p>
+                <strong>Fecha Despacho:</strong>
+                @Model.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
+            </p>
+        }
+
+        <p><strong>Número Guía:</strong> @Model.NumeroGuia</p>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Detalles)
+        {
+            <tr>
+                <td>@item.Producto</td>
+                <td>@item.Cantidad</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">
+    Volver
+</a>

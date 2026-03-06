@@ -1,0 +1,190 @@
+﻿@model GestionLogisticaTI.ViewModels.IngresoViewModel
+
+<h2>Registrar Ingreso de Mercadería</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<form method="post">
+
+    <div class="form-group">
+        <label>Número Documento</label>
+        <input name="NumeroDocumento" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Motivo (Opcional)</label>
+        <input name="Motivo" class="form-control" />
+    </div>
+
+    <hr>
+
+    <h4>Productos</h4>
+
+    <table class="table" id="tablaProductos">
+
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>
+                    <select name="Detalles[0].IdProducto" class="form-control productoSelect" onchange="validarDuplicados()">
+
+                        @foreach (var p in Model.Productos)
+                        {
+                            <option value="@p.IdProducto">@p.Nombre</option>
+                        }
+
+                    </select>
+                </td>
+
+                <td>
+                    <input type="number" name="Detalles[0].Cantidad" class="form-control cantidad" min="1" oninput="calcularTotal()" />
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-danger eliminarFila">X</button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <div class="mt-2">
+        <strong>Total unidades ingresadas:</strong>
+        <span id="totalUnidades">0</span>
+    </div>
+
+    <button type="button" class="btn btn-secondary" id="btnAgregar">
+        Agregar Producto
+    </button>
+
+    <br><br>
+
+    <button class="btn btn-success">
+        Registrar Ingreso
+    </button>
+
+</form>
+
+<script>
+
+let index = 1;
+
+function calcularTotal() {
+
+    let total = 0;
+
+    document.querySelectorAll(".cantidad").forEach(input => {
+
+        let val = parseInt(input.value);
+
+        if (!isNaN(val))
+            total += val;
+
+    });
+
+    document.getElementById("totalUnidades").innerText = total;
+}
+
+function validarDuplicados() {
+
+    let productos = [];
+
+    let selects = document.querySelectorAll(".productoSelect");
+
+    for (let s of selects) {
+
+        if (productos.includes(s.value)) {
+
+            alert("Este producto ya fue agregado.");
+            s.value = "";
+            return;
+        }
+
+        productos.push(s.value);
+    }
+}
+
+document.getElementById("btnAgregar").addEventListener("click", function(){
+
+    let tabla = document.querySelector("#tablaProductos tbody");
+
+    let nuevaFila = `
+<tr>
+
+<td>
+<select name="Detalles[${index}].IdProducto"
+class="form-control productoSelect"
+onchange="validarDuplicados()">
+
+@foreach (var p in Model.Productos)
+{
+<text>
+<option value="@p.IdProducto">@p.Nombre</option>
+</text>
+}
+
+</select>
+</td>
+
+<td>
+<input type="number"
+name="Detalles[${index}].Cantidad"
+class="form-control cantidad"
+min="1"
+oninput="calcularTotal()" />
+</td>
+
+<td>
+<button type="button" class="btn btn-danger eliminarFila">X</button>
+</td>
+
+</tr>`;
+
+    tabla.insertAdjacentHTML("beforeend", nuevaFila);
+
+    index++;
+
+});
+
+document.addEventListener("click", function(e){
+
+    if(e.target.classList.contains("eliminarFila"))
+    {
+        e.target.closest("tr").remove();
+        calcularTotal();
+    }
+
+});
+
+document.addEventListener("input", function(e){
+
+    if(e.target.classList.contains("cantidad"))
+    {
+        if(e.target.value < 0)
+        {
+            alert("La cantidad no puede ser negativa");
+            e.target.value = "";
+        }
+
+        calcularTotal();
+    }
+
+});
+
+</script>

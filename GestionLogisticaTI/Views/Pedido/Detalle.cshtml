@@ -1,0 +1,85 @@
+﻿@model GestionLogisticaTI.ViewModels.PedidoCreateViewModel
+
+@{
+    ViewBag.Title = "Detalle Pedido";
+}
+
+<h2>Detalle del Pedido</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p><strong>ID Pedido:</strong> @Model.IdPedido</p>
+        <p>
+            <strong>Fecha Registro:</strong>
+            @Convert.ToDateTime(ViewBag.Fecha).ToString("dd/MM/yyyy")
+        </p>
+
+        @if (Model.FechaDespacho.HasValue)
+        {
+            <p>
+                <strong>Fecha Despacho:</strong>
+                @Model.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
+            </p>
+        }
+        <p><strong>Cliente:</strong> @ViewBag.Cliente</p>
+        <p>
+            <strong>Estado:</strong>
+            @if (ViewBag.Estado == "Pendiente")
+            {
+                <span class="badge bg-warning text-dark">Pendiente</span>
+            }
+            else if (ViewBag.Estado == "Autorizado")
+            {
+                <span class="badge bg-primary">Autorizado</span>
+            }
+            else if (ViewBag.Estado == "Despachado")
+            {
+                <span class="badge bg-success">Despachado</span>
+            }
+            else if (ViewBag.Estado == "Cancelado")
+            {
+                <span class="badge bg-secondary">Cancelado</span>
+            }
+        </p>
+    </div>
+</div>
+
+<h4>Productos</h4>
+
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Detalles)
+        {
+            <tr>
+                <td>@item.Producto</td>
+                <td>@item.Cantidad</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br />
+
+@if (ViewBag.Estado == "Pendiente")
+{
+    <a href="@Url.Action("Edit", new { id = Model.IdPedido })"
+       class="btn btn-primary">
+        Editar
+    </a>
+
+    <a href="@Url.Action("Cancelar", new { id = Model.IdPedido })"
+       class="btn btn-danger"
+       onclick="return confirm('¿Seguro que desea cancelar este pedido?');">
+        Cancelar
+    </a>
+}
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">
+    Volver
+</a>

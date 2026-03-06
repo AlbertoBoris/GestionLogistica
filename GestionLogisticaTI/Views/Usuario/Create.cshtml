@@ -1,0 +1,36 @@
+﻿@model GestionLogisticaTI.ViewModels.UsuarioViewModel
+
+<h2>Nuevo Usuario</h2>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group mb-3">
+        <label>Nombre</label>
+        @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Correo</label>
+        @Html.TextBoxFor(m => m.Correo, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Contraseña</label>
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Rol</label>
+        @Html.DropDownListFor(m => m.IdRol, Model.Roles,
+                           "-- Seleccione Rol --",
+                           new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.NombreRol, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        Guardar
+    </button>
+}

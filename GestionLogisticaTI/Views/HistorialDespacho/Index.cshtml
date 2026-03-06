@@ -1,0 +1,70 @@
+﻿@model List<GestionLogisticaTI.ViewModels.HistorialDespachoViewModel>
+<h2>Historial de Despachos</h2>
+
+@using (Html.BeginForm("Index", "HistorialDespacho", FormMethod.Get))
+{
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input type="text" name="numeroGuia"
+                   value="@ViewBag.NumeroGuia"
+                   class="form-control"
+                   placeholder="Buscar por guía" />
+        </div>
+
+        <div class="col-md-3">
+            <input type="date" name="fechaDesde"
+                   value="@(ViewBag.FechaDesde != null ? ((DateTime)ViewBag.FechaDesde).ToString("yyyy-MM-dd") : "")"
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <input type="date" name="fechaHasta"
+                   value="@(ViewBag.FechaHasta != null ? ((DateTime)ViewBag.FechaHasta).ToString("yyyy-MM-dd") : "")"
+                   class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary">
+                Filtrar
+            </button>
+        </div>
+
+    </div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Pedido</th>
+            <th>Cliente</th>
+            <th>Fecha Pedido</th>
+            <th>Fecha Despacho</th>
+            <th>N° Guía</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.IdPedido</td>
+                <td>@item.Cliente</td>
+                <td>@item.Fecha.ToShortDateString()</td>
+                <td>
+                    @if (item.FechaDespacho.HasValue)
+                    {
+                        @item.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
+                    }
+                </td>
+                <td>@item.NumeroGuia</td>
+                <td>
+                    <a href="@Url.Action("Detalle", new { id = item.IdPedido })"
+                       class="btn btn-primary btn-sm">
+                        Ver
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
