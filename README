@@ -1,0 +1,57 @@
+# Sistema de Gestión Logística
+
+Proyecto desarrollado en **ASP.NET MVC5 (.NET Framework)** como parte del curso de desarrollo de software.
+
+## Tecnologías utilizadas
+
+* ASP.NET MVC 5
+* .NET Framework 4.8
+* SQL Server
+* ADO.NET
+* Bootstrap
+* Rotativa (Generación de PDF)
+* Git / GitHub
+
+## Funcionalidades principales
+
+* Autenticación de usuarios
+* Gestión de productos
+* Registro de movimientos de inventario
+* Generación de reportes
+* Exportación de consultas a PDF
+
+## Requisitos
+
+Para ejecutar el proyecto se requiere:
+
+* Visual Studio 2022
+* .NET Framework 4.8
+* SQL Server
+* NuGet Package Restore habilitado
+
+## Cómo ejecutar el proyecto
+
+1. Clonar el repositorio
+2. Abrir el archivo `.sln` en Visual Studio
+3. Restaurar los paquetes NuGet
+4. Configurar la cadena de conexión en `Web.config`
+5. Ejecutar el proyecto
+
+## Estructura del proyecto
+
+GestionLogisticaTI
+│
+├── Controllers
+├── Models
+├── Views
+├── Scripts
+├── Content
+├── Data
+├── Rotativa
+├── App_Start
+├── GestionLogisticaTI.csproj
+└── Web.config
+
+## Autor
+
+Proyecto desarrollado por estudiantes de Conputación e Informatica.
