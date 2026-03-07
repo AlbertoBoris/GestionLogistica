@@ -1,9 +1,12 @@
 ﻿@model List<GestionLogisticaTI.ViewModels.HistorialDespachoViewModel>
 
-<h2 class="mb-4">
+<h2 class="mb-1">
     <i class="bi bi-truck"></i>
     Historial de Despachos
 </h2>
+<h6 class="mb-4 text-secondary">
+    Consulta y trazabilidad de salidas
+</h6>
 
 
 <div class="card mb-4">
@@ -150,23 +153,23 @@
 
     <script>
 
-$(document).ready(function(){
+        $(document).ready(function () {
 
-$('#tablaDespachos').DataTable({
+            $('#tablaDespachos').DataTable({
 
-pageLength:10,
+                pageLength: 10,
 
-searching:false,
-lengthChange:false,
-info:false,
+                searching: false,
+                lengthChange: false,
+                info: false,
 
-language:{
-url:"//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
-}
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
 
-});
+            });
 
-});
+        });
 
     </script>
 

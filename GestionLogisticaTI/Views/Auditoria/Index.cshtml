@@ -1,137 +1,308 @@
 ﻿@model List<GestionLogisticaTI.ViewModels.AuditoriaViewModel>
 
-<h2>Auditoría de Inventario</h2>
+<h2 class="mb-1">
+    <i class="bi bi-clipboard-data"></i>
+    Auditoría de Inventario
+</h2>
+<h6 class="mb-4 text-secondary">
+    Comparación stock sistema vs físico
+</h6>
 
-@using (Html.BeginForm("Index", "Auditoria", FormMethod.Get))
-{
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <input type="text"
-                   name="ubicacion"
-                   value="@ViewBag.Ubicacion"
-                   class="form-control"
-                   placeholder="Filtrar por ubicación" />
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">
-                Filtrar
-            </button>
-        </div>
+<div class="card mb-4">
+
+    <div class="card-body">
+
+        @using (Html.BeginForm("Index", "Auditoria", FormMethod.Get))
+        {
+
+            <div class="row">
+
+                <div class="col-md-4 mb-2">
+
+                    <input type="text"
+                           name="ubicacion"
+                           value="@ViewBag.Ubicacion"
+                           class="form-control"
+                           placeholder="Filtrar por ubicación" />
+
+                </div>
+
+                <div class="col-md-2 mb-2">
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+
+                        <i class="bi bi-search"></i>
+                        Filtrar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        }
+
     </div>
-}
 
-@using (Html.BeginForm("Aplicar", "Auditoria", FormMethod.Post))
+</div>
+
+
+@using (Html.BeginForm("Aplicar", "Auditoria", FormMethod.Post, new { id = "formAuditoria" }))
 {
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Ubicación</th>
-                <th>Stock Sistema</th>
-                <th>Stock Físico</th>
-                <th>Diferencia</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                int index = 0;
-            }
 
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @item.Nombre
-                        <input type="hidden" name="[@index].IdProducto" value="@item.IdProducto" />
-                        <input type="hidden" name="[@index].StockActual" value="@item.StockActual" />
-                    </td>
-                    <td>@item.Ubicacion</td>
-                    <td>@item.StockActual</td>
-                    <td>
-                        <input type="number"
-                               name="[@index].StockFisico"
-                               class="form-control stockFisico"
-                               data-stock="@item.StockActual"
-                               oninput="calcularDiferencia(this)" />
-                    </td>
-                    <td class="diferencia text-center">0</td>
-                </tr>
+    <div class="card">
 
-                index++;
-            }
-        </tbody>
-    </table>
+        <div class="card-body">
+
+            <table id="tablaAuditoria"
+                   class="table table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Producto</th>
+                        <th>Ubicación</th>
+                        <th>Stock Sistema</th>
+                        <th>Stock Físico</th>
+                        <th>Diferencia</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @{
+                        int index = 0;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+
+                        <tr>
+
+                            <td>
+
+                                <i class="bi bi-box"></i>
+                                @item.Nombre
+
+                                <input type="hidden"
+                                       name="[@index].IdProducto"
+                                       value="@item.IdProducto" />
+
+                                <input type="hidden"
+                                       name="[@index].StockActual"
+                                       value="@item.StockActual" />
+
+                            </td>
+
+                            <td>
+
+                                <i class="bi bi-geo-alt"></i>
+                                @item.Ubicacion
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-secondary">
+                                    @item.StockActual
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <input type="number"
+                                       name="[@index].StockFisico"
+                                       class="form-control stockFisico"
+                                       data-stock="@item.StockActual"
+                                       oninput="calcularDiferencia(this)"
+                                       min="0" />
+
+                            </td>
+
+                            <td class="diferencia text-center fw-bold">
+
+                                <span class="badge bg-light text-dark">
+                                    0
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        index++;
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
 
     <div class="row mt-3">
-        <div class="col-md-4">
-            <div class="alert alert-info">
-                Total productos revisados:
-                <strong id="totalRevisados">0</strong>
-            </div>
-        </div>
 
         <div class="col-md-4">
-            <div class="alert alert-warning">
-                Total diferencias:
-                <strong id="totalDiferencias">0</strong>
+
+            <div class="alert alert-info">
+
+                <i class="bi bi-box"></i>
+
+                Productos revisados:
+
+                <strong id="totalRevisados">
+                    0
+                </strong>
+
             </div>
+
         </div>
+
+
+        <div class="col-md-4">
+
+            <div class="alert alert-warning">
+
+                <i class="bi bi-exclamation-triangle"></i>
+
+                Diferencias detectadas:
+
+                <strong id="totalDiferencias">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <button type="submit" class="btn btn-danger">
+
+
+    <button type="submit"
+            class="btn btn-danger mt-2">
+
+        <i class="bi bi-check-circle"></i>
         Aplicar Auditoría
+
     </button>
+
 }
 
-<script>
-    function calcularDiferencia(input) {
+@section scripts{
 
-        var stockSistema = parseInt(input.getAttribute("data-stock"));
-        var stockFisico = input.value === "" ? null : parseInt(input.value);
+    <script>
 
-        var fila = input.closest("tr");
-        var celdaDiferencia = fila.querySelector(".diferencia");
+        $(document).ready(function () {
 
-        if (stockFisico === null) {
-            celdaDiferencia.innerText = "0";
-            celdaDiferencia.classList.remove("text-danger");
-            actualizarTotales();
-            return;
-        }
+            $('#tablaAuditoria').DataTable({
 
-        var diferencia = stockFisico - stockSistema;
-        celdaDiferencia.innerText = diferencia;
+                pageLength: 10,
 
-        if (diferencia !== 0) {
-            celdaDiferencia.classList.add("text-danger");
-        } else {
-            celdaDiferencia.classList.remove("text-danger");
-        }
+                searching: false,
+                lengthChange: false,
 
-        actualizarTotales();
-    }
-
-    function actualizarTotales() {
-
-        var inputs = document.querySelectorAll(".stockFisico");
-        var totalRevisados = 0;
-        var totalDiferencias = 0;
-
-        inputs.forEach(function (input) {
-
-            if (input.value !== "") {
-                totalRevisados++;
-
-                var stockSistema = parseInt(input.getAttribute("data-stock"));
-                var stockFisico = parseInt(input.value);
-
-                if (stockFisico !== stockSistema) {
-                    totalDiferencias++;
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
                 }
-            }
+
+            });
+
         });
 
-        document.getElementById("totalRevisados").innerText = totalRevisados;
-        document.getElementById("totalDiferencias").innerText = totalDiferencias;
-    }
-</script>
+        $('#formAuditoria').on('submit', function () {
+
+            var table = $('#tablaAuditoria').DataTable();
+
+            // mostrar todas las filas antes de enviar
+            table.page.len(-1).draw();
+
+        });
+
+
+
+        function calcularDiferencia(input) {
+
+            var stockSistema = parseInt(input.getAttribute("data-stock"));
+            var stockFisico = input.value === "" ? null : parseInt(input.value);
+
+            var fila = input.closest("tr");
+            var celda = fila.querySelector(".diferencia");
+
+            if (stockFisico === null) {
+
+                celda.innerHTML =
+                    '<span class="badge bg-light text-dark">0</span>';
+
+                actualizarTotales();
+                return;
+
+            }
+
+            var diferencia = stockFisico - stockSistema;
+
+            if (diferencia === 0) {
+
+                celda.innerHTML =
+                    '<span class="badge bg-success">0</span>';
+
+            }
+
+            else if (diferencia > 0) {
+
+                celda.innerHTML =
+                    '<span class="badge bg-primary">+' + diferencia + '</span>';
+
+            }
+
+            else {
+
+                celda.innerHTML =
+                    '<span class="badge bg-danger">' + diferencia + '</span>';
+
+            }
+
+            actualizarTotales();
+
+        }
+
+
+
+        function actualizarTotales() {
+
+            var table = $('#tablaAuditoria').DataTable();
+
+            var totalRevisados = 0;
+            var totalDiferencias = 0;
+
+            table.$('.stockFisico').each(function () {
+
+                if (this.value !== "") {
+
+                    totalRevisados++;
+
+                    var stockSistema = parseInt(this.getAttribute("data-stock"));
+                    var stockFisico = parseInt(this.value);
+
+                    if (stockFisico !== stockSistema) {
+                        totalDiferencias++;
+                    }
+
+                }
+
+            });
+
+            $('#totalRevisados').text(totalRevisados);
+            $('#totalDiferencias').text(totalDiferencias);
+
+        }
+
+    </script>
+
+}

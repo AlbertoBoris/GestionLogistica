@@ -59,7 +59,13 @@ namespace GestionLogisticaTI.Controllers
             dt.Columns.Add("idProducto", typeof(int));
             dt.Columns.Add("stockFisico", typeof(int));
 
-            foreach (var item in model)
+            if (model == null)
+            {
+                TempData["Error"] = "No se recibieron datos de auditoría.";
+                return RedirectToAction("Index");
+            }
+
+            foreach (var item in model.Where(x => x != null))
             {
                 if (item.StockFisico != null) // solo si ingresó valor
                 {
