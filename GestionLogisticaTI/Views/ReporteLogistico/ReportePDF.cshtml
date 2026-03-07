@@ -12,35 +12,48 @@
     <style>
 
         body {
-            font-family: Arial;
+            font-family: Arial, Helvetica, sans-serif;
             font-size: 12px;
+            margin: 30px;
+            color: #333;
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #2f4050;
+            border-bottom: 3px solid #2f4050;
             padding-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .titulo {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
+            color: #2f4050;
         }
 
         .subtitulo {
-            font-size: 14px;
-            margin-top: 5px;
+            font-size: 15px;
+            margin-top: 4px;
         }
 
         .info {
-            margin-top: 10px;
+            margin-top: 15px;
             margin-bottom: 20px;
+            line-height: 1.6;
         }
+
+            .info strong {
+                display: inline-block;
+                width: 160px;
+            }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        thead {
+            display: table-header-group;
         }
 
         th {
@@ -48,57 +61,37 @@
             color: white;
             padding: 8px;
             border: 1px solid #ccc;
+            text-align: left;
         }
 
         td {
-            padding: 6px;
+            padding: 7px;
             border: 1px solid #ccc;
         }
 
         tbody tr:nth-child(even) {
-            background: #f4f6f8;
-        }
-
-        .resumen {
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        .footer {
-            margin-top: 25px;
-            font-size: 11px;
-            border-top: 1px solid #ccc;
-            padding-top: 8px;
-            text-align: right;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            display: table-header-group;
-        }
-
-        tfoot {
-            display: table-footer-group;
+            background: #f5f7fa;
         }
 
         tr {
             page-break-inside: avoid;
         }
 
-        td, th {
-            padding: 6px;
-            border: 1px solid #ccc;
-        }
-
-        tbody tr:nth-child(even) {
+        .resumen {
+            margin-top: 20px;
+            padding: 10px;
             background: #f4f6f8;
+            border: 1px solid #ccc;
+            font-weight: bold;
         }
 
-        tbody tr:hover {
-            background: #e9ecef;
+        .footer {
+            margin-top: 40px;
+            border-top: 1px solid #ccc;
+            padding-top: 8px;
+            font-size: 11px;
+            text-align: right;
+            color: #777;
         }
     </style>
 
@@ -136,7 +129,8 @@
         <strong>Generado por:</strong> @Session["Nombre"]
         <br />
 
-        <strong>Fecha de generación:</strong> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+        <strong>Fecha de generación:</strong>
+        @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
 
     </div>
 
@@ -175,8 +169,7 @@
 
         </table>
 
-
-        <div class="resumen" style="margin-top:15px; page-break-inside: avoid;">
+        <div class="resumen">
             Total de registros: @Model.Resultados.Count
         </div>
 
@@ -188,7 +181,6 @@
         Reporte generado automáticamente por el sistema.
 
     </div>
-
 
 </body>
 </html>

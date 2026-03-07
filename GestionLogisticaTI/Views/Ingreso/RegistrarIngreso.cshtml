@@ -1,136 +1,211 @@
 ﻿@model GestionLogisticaTI.ViewModels.IngresoViewModel
 
-<h2>Registrar Ingreso de Mercadería</h2>
+<h2 class="mb-4">
+    <i class="bi bi-box-arrow-in-down"></i>
+    Registrar Ingreso de Mercadería
+</h2>
 
 @if (TempData["Mensaje"] != null)
 {
     <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i>
         @TempData["Mensaje"]
     </div>
 }
 
-<form method="post">
+<div class="card">
 
-    <div class="form-group">
-        <label>Número Documento</label>
-        <input name="NumeroDocumento" class="form-control" />
+    <div class="card-body">
+
+        <form method="post">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Número Documento
+                    </label>
+
+                    <input name="NumeroDocumento"
+                           class="form-control"
+                           placeholder="Factura / Guía" />
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        <i class="bi bi-chat-left-text"></i>
+                        Motivo (Opcional)
+                    </label>
+
+                    <input name="Motivo"
+                           class="form-control"
+                           placeholder="Motivo del ingreso" />
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <h5 class="mb-3">
+                <i class="bi bi-box-seam"></i>
+                Productos
+            </h5>
+
+            <table class="table table-striped align-middle" id="tablaProductos">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th width="50%">Producto</th>
+                        <th width="20%">Cantidad</th>
+                        <th width="10%"></th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+
+                            <select name="Detalles[0].IdProducto"
+                                    class="form-control productoSelect">
+
+                                @foreach (var p in Model.Productos)
+                                {
+                                    <option value="@p.IdProducto">@p.Nombre</option>
+                                }
+
+                            </select>
+
+                        </td>
+
+                        <td>
+
+                            <input type="number"
+                                   name="Detalles[0].Cantidad"
+                                   class="form-control cantidad"
+                                   min="1" />
+
+                        </td>
+
+                        <td>
+
+                            <button type="button"
+                                    class="btn btn-danger eliminarFila">
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <div class="mb-3">
+
+                <strong>Total unidades ingresadas:</strong>
+                <span id="totalUnidades" class="badge bg-primary">0</span>
+
+            </div>
+
+            <button type="button"
+                    class="btn btn-secondary"
+                    id="btnAgregar">
+
+                <i class="bi bi-plus-circle"></i>
+                Agregar Producto
+
+            </button>
+
+            <hr>
+
+            <button class="btn btn-success">
+
+                <i class="bi bi-check-circle"></i>
+                Registrar Ingreso
+
+            </button>
+
+            <a href="@Url.Action("Index","Producto")"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+                Cancelar
+
+            </a>
+
+        </form>
+
     </div>
 
-    <div class="form-group">
-        <label>Motivo (Opcional)</label>
-        <input name="Motivo" class="form-control" />
-    </div>
+</div>
 
-    <hr>
+@section scripts{
 
-    <h4>Productos</h4>
-
-    <table class="table" id="tablaProductos">
-
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th></th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <tr>
-
-                <td>
-                    <select name="Detalles[0].IdProducto" class="form-control productoSelect" onchange="validarDuplicados()">
-
-                        @foreach (var p in Model.Productos)
-                        {
-                            <option value="@p.IdProducto">@p.Nombre</option>
-                        }
-
-                    </select>
-                </td>
-
-                <td>
-                    <input type="number" name="Detalles[0].Cantidad" class="form-control cantidad" min="1" oninput="calcularTotal()" />
-                </td>
-
-                <td>
-                    <button type="button" class="btn btn-danger eliminarFila">X</button>
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
-    <div class="mt-2">
-        <strong>Total unidades ingresadas:</strong>
-        <span id="totalUnidades">0</span>
-    </div>
-
-    <button type="button" class="btn btn-secondary" id="btnAgregar">
-        Agregar Producto
-    </button>
-
-    <br><br>
-
-    <button class="btn btn-success">
-        Registrar Ingreso
-    </button>
-
-</form>
-
-<script>
+    <script>
 
 let index = 1;
 
-function calcularTotal() {
+function calcularTotal(){
 
-    let total = 0;
+let total = 0;
 
-    document.querySelectorAll(".cantidad").forEach(input => {
+document.querySelectorAll(".cantidad").forEach(input => {
 
-        let val = parseInt(input.value);
+let val = parseInt(input.value);
 
-        if (!isNaN(val))
-            total += val;
+if(!isNaN(val))
+total += val;
 
-    });
+});
 
-    document.getElementById("totalUnidades").innerText = total;
+document.getElementById("totalUnidades").innerText = total;
+
 }
 
-function validarDuplicados() {
+function validarDuplicados(){
 
-    let productos = [];
+let productos = [];
 
-    let selects = document.querySelectorAll(".productoSelect");
+document.querySelectorAll(".productoSelect").forEach(select => {
 
-    for (let s of selects) {
+if(productos.includes(select.value)){
 
-        if (productos.includes(s.value)) {
+alert("Este producto ya fue agregado");
 
-            alert("Este producto ya fue agregado.");
-            s.value = "";
-            return;
-        }
+select.value = "";
 
-        productos.push(s.value);
-    }
 }
 
-document.getElementById("btnAgregar").addEventListener("click", function(){
+productos.push(select.value);
 
-    let tabla = document.querySelector("#tablaProductos tbody");
+});
 
-    let nuevaFila = `
+}
+
+$("#btnAgregar").click(function(){
+
+let tabla = $("#tablaProductos tbody");
+
+let fila = `
+
 <tr>
 
 <td>
+
 <select name="Detalles[${index}].IdProducto"
-class="form-control productoSelect"
-onchange="validarDuplicados()">
+class="form-control productoSelect">
 
 @foreach (var p in Model.Productos)
 {
@@ -140,51 +215,79 @@ onchange="validarDuplicados()">
 }
 
 </select>
+
 </td>
 
 <td>
+
 <input type="number"
 name="Detalles[${index}].Cantidad"
 class="form-control cantidad"
-min="1"
-oninput="calcularTotal()" />
+min="1"/>
+
 </td>
 
 <td>
-<button type="button" class="btn btn-danger eliminarFila">X</button>
+
+<button type="button"
+class="btn btn-danger eliminarFila">
+
+<i class="bi bi-trash"></i>
+
+</button>
+
 </td>
 
-</tr>`;
+</tr>
 
-    tabla.insertAdjacentHTML("beforeend", nuevaFila);
+`;
 
-    index++;
+tabla.append(fila);
+
+$(".productoSelect").select2({
+width:'100%'
+});
+
+index++;
 
 });
 
-document.addEventListener("click", function(e){
+$(document).on("click",".eliminarFila",function(){
 
-    if(e.target.classList.contains("eliminarFila"))
-    {
-        e.target.closest("tr").remove();
-        calcularTotal();
-    }
+$(this).closest("tr").remove();
+
+calcularTotal();
 
 });
 
-document.addEventListener("input", function(e){
+$(document).on("input",".cantidad",function(){
 
-    if(e.target.classList.contains("cantidad"))
-    {
-        if(e.target.value < 0)
-        {
-            alert("La cantidad no puede ser negativa");
-            e.target.value = "";
-        }
+if(this.value < 0){
 
-        calcularTotal();
-    }
+alert("La cantidad no puede ser negativa");
+
+this.value = "";
+
+}
+
+calcularTotal();
 
 });
 
-</script>
+$(document).on("change",".productoSelect",function(){
+
+validarDuplicados();
+
+});
+
+$(document).ready(function(){
+
+$(".productoSelect").select2({
+width:'100%'
+});
+
+});
+
+    </script>
+
+}

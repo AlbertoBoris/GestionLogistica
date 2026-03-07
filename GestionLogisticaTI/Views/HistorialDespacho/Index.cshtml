@@ -1,70 +1,173 @@
 ﻿@model List<GestionLogisticaTI.ViewModels.HistorialDespachoViewModel>
-<h2>Historial de Despachos</h2>
 
-@using (Html.BeginForm("Index", "HistorialDespacho", FormMethod.Get))
-{
-    <div class="row mb-3">
+<h2 class="mb-4">
+    <i class="bi bi-truck"></i>
+    Historial de Despachos
+</h2>
 
-        <div class="col-md-3">
-            <input type="text" name="numeroGuia"
-                   value="@ViewBag.NumeroGuia"
-                   class="form-control"
-                   placeholder="Buscar por guía" />
-        </div>
 
-        <div class="col-md-3">
-            <input type="date" name="fechaDesde"
-                   value="@(ViewBag.FechaDesde != null ? ((DateTime)ViewBag.FechaDesde).ToString("yyyy-MM-dd") : "")"
-                   class="form-control" />
-        </div>
+<div class="card mb-4">
 
-        <div class="col-md-3">
-            <input type="date" name="fechaHasta"
-                   value="@(ViewBag.FechaHasta != null ? ((DateTime)ViewBag.FechaHasta).ToString("yyyy-MM-dd") : "")"
-                   class="form-control" />
-        </div>
+    <div class="card-body">
 
-        <div class="col-md-3">
-            <button type="submit" class="btn btn-primary">
-                Filtrar
-            </button>
-        </div>
+        @using (Html.BeginForm("Index", "HistorialDespacho", FormMethod.Get))
+        {
+
+            <div class="row">
+
+                <div class="col-md-3 mb-2">
+
+                    <input type="text"
+                           name="numeroGuia"
+                           value="@ViewBag.NumeroGuia"
+                           class="form-control"
+                           placeholder="Buscar por guía" />
+
+                </div>
+
+                <div class="col-md-3 mb-2">
+
+                    <input type="date"
+                           name="fechaDesde"
+                           value="@(ViewBag.FechaDesde != null ? ((DateTime)ViewBag.FechaDesde).ToString("yyyy-MM-dd") : "")"
+                           class="form-control" />
+
+                </div>
+
+                <div class="col-md-3 mb-2">
+
+                    <input type="date"
+                           name="fechaHasta"
+                           value="@(ViewBag.FechaHasta != null ? ((DateTime)ViewBag.FechaHasta).ToString("yyyy-MM-dd") : "")"
+                           class="form-control" />
+
+                </div>
+
+                <div class="col-md-3 mb-2">
+
+                    <button type="submit" class="btn btn-primary w-100">
+
+                        <i class="bi bi-search"></i>
+                        Filtrar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        }
 
     </div>
+
+</div>
+
+
+<div class="card">
+
+    <div class="card-body">
+
+        <table id="tablaDespachos"
+               class="table table-striped table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+                    <th>Pedido</th>
+                    <th>Cliente</th>
+                    <th>Fecha Pedido</th>
+                    <th>Fecha Despacho</th>
+                    <th>N° Guía</th>
+                    <th width="120">Acciones</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+                            <span class="badge bg-secondary">
+                                #@item.IdPedido
+                            </span>
+                        </td>
+
+                        <td>
+                            <i class="bi bi-person"></i>
+                            @item.Cliente
+                        </td>
+
+                        <td>
+                            @item.Fecha.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td>
+
+                            @if (item.FechaDespacho.HasValue)
+                            {
+                                @item.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
+                            }
+
+                        </td>
+
+                        <td>
+
+                            @if (!string.IsNullOrEmpty(item.NumeroGuia))
+                            {
+                                <span class="badge bg-info">
+                                    @item.NumeroGuia
+                                </span>
+                            }
+
+                        </td>
+
+                        <td>
+
+                            <a href="@Url.Action("Detalle", new { id = item.IdPedido })"
+                               class="btn btn-primary btn-sm">
+
+                                <i class="bi bi-eye"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+@section scripts{
+
+    <script>
+
+$(document).ready(function(){
+
+$('#tablaDespachos').DataTable({
+
+pageLength:10,
+
+searching:false,
+lengthChange:false,
+info:false,
+
+language:{
+url:"//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
 }
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Pedido</th>
-            <th>Cliente</th>
-            <th>Fecha Pedido</th>
-            <th>Fecha Despacho</th>
-            <th>N° Guía</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.IdPedido</td>
-                <td>@item.Cliente</td>
-                <td>@item.Fecha.ToShortDateString()</td>
-                <td>
-                    @if (item.FechaDespacho.HasValue)
-                    {
-                        @item.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
-                    }
-                </td>
-                <td>@item.NumeroGuia</td>
-                <td>
-                    <a href="@Url.Action("Detalle", new { id = item.IdPedido })"
-                       class="btn btn-primary btn-sm">
-                        Ver
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+});
+
+});
+
+    </script>
+
+}

@@ -1,105 +1,178 @@
-﻿
-@model GestionLogisticaTI.ViewModels.AjusteInventarioViewModel
+﻿@model GestionLogisticaTI.ViewModels.AjusteInventarioViewModel
 
-<h2>Ajuste de Inventario</h2>
+<h2 class="mb-4">
+    <i class="bi bi-tools"></i>
+    Ajuste de Inventario
+</h2>
 
 @if (TempData["Mensaje"] != null)
 {
     <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i>
         @TempData["Mensaje"]
     </div>
 }
 
-<form method="post">
+<div class="card">
 
-    <div class="form-group">
-        <label>Número de Documento</label>
-        <input name="NumeroDocumento" class="form-control" required />
+    <div class="card-body">
+
+        <form method="post">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+
+                    <label class="form-label">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Número de Documento
+                    </label>
+
+                    <input name="NumeroDocumento"
+                           class="form-control"
+                           required />
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        <i class="bi bi-chat-left-text"></i>
+                        Motivo del ajuste
+                    </label>
+
+                    <input name="Motivo"
+                           class="form-control"
+                           required />
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <h5 class="mb-3">
+                <i class="bi bi-box-seam"></i>
+                Productos
+            </h5>
+
+            <table class="table table-striped align-middle" id="tablaAjuste">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th width="30%">Producto</th>
+                        <th width="15%">Stock Actual</th>
+                        <th width="15%">Ajuste</th>
+                        <th width="15%">Stock Final</th>
+                        <th width="5%"></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            <select name="Detalles[0].IdProducto"
+                                    class="form-control productoSelect">
+
+                                @foreach (var p in Model.Productos)
+                                {
+                                    <option value="@p.IdProducto">@p.Nombre</option>
+                                }
+
+                            </select>
+                        </td>
+
+                        <td>
+                            <input type="text"
+                                   class="form-control stockActual"
+                                   readonly />
+                        </td>
+
+                        <td>
+                            <input type="number"
+                                   name="Detalles[0].CantidadAjuste"
+                                   class="form-control ajusteCantidad" />
+                        </td>
+
+                        <td>
+                            <input type="text"
+                                   class="form-control stockFinal"
+                                   readonly />
+                        </td>
+
+                        <td>
+                            <button type="button"
+                                    class="btn btn-danger eliminarFila">
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <button type="button"
+                    class="btn btn-secondary"
+                    id="btnAgregar">
+
+                <i class="bi bi-plus-circle"></i>
+                Agregar Producto
+
+            </button>
+
+            <hr>
+
+            <button class="btn btn-warning">
+
+                <i class="bi bi-tools"></i>
+                Registrar Ajuste
+
+            </button>
+
+            <a href="@Url.Action("Index","Producto")"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+                Cancelar
+
+            </a>
+
+        </form>
+
     </div>
+</div>
 
-    <div class="form-group">
-        <label>Motivo del ajuste</label>
-        <input name="Motivo" class="form-control" required />
-    </div>
+@section scripts{
 
-    <hr>
-
-    <h4>Productos</h4>
-
-    <table class="table" id="tablaAjuste">
-
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Stock Actual</th>
-                <th>Ajuste</th>
-                <th>Stock Final</th>
-                <th></th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <tr>
-
-                <td>
-                    <select name="Detalles[0].IdProducto"
-                            class="form-control productoSelect">
-                        @foreach (var p in Model.Productos)
-                        {
-                            <option value="@p.IdProducto">@p.Nombre</option>
-                        }
-                    </select>
-                </td>
-
-                <td>
-                    <input type="text" class="form-control stockActual" readonly />
-                </td>
-
-                <td>
-                    <input type="number"
-                           name="Detalles[0].CantidadAjuste"
-                           class="form-control ajusteCantidad" />
-                </td>
-
-                <td>
-                    <input type="text" class="form-control stockFinal" readonly />
-                </td>
-
-                <td>
-                    <button type="button" class="btn btn-danger eliminarFila">X</button>
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
-    <button type="button" class="btn btn-secondary" id="btnAgregar">
-        Agregar Producto
-    </button>
-
-    <br><br>
-
-    <button class="btn btn-warning">
-        Registrar Ajuste
-    </button>
-
-</form>
-
-<script>
+    <script>
 
 let index = 1;
 
-document.getElementById("btnAgregar").addEventListener("click", function(){
+function actualizarStockFinal(fila){
 
-let tabla = document.querySelector("#tablaAjuste tbody");
+let stock = parseInt(fila.find(".stockActual").val()) || 0;
+let ajuste = parseInt(fila.find(".ajusteCantidad").val()) || 0;
+
+fila.find(".stockFinal").val(stock + ajuste);
+
+}
+
+$("#btnAgregar").click(function(){
+
+let tabla = $("#tablaAjuste tbody");
 
 let fila = `
+
 <tr>
 
 <td>
+
 <select name="Detalles[${index}].IdProducto"
 class="form-control productoSelect">
 
@@ -111,6 +184,7 @@ class="form-control productoSelect">
 }
 
 </select>
+
 </td>
 
 <td>
@@ -133,64 +207,63 @@ readonly />
 
 <td>
 <button type="button"
-class="btn btn-danger eliminarFila">X</button>
+class="btn btn-danger eliminarFila">
+
+<i class="bi bi-trash"></i>
+
+</button>
 </td>
 
-</tr>`;
+</tr>
+`;
 
-tabla.insertAdjacentHTML("beforeend", fila);
+tabla.append(fila);
+
+$(".productoSelect").select2({ width:'100%' });
 
 index++;
 
 });
 
-document.addEventListener("click", function(e){
+$(document).on("click",".eliminarFila",function(){
 
-if(e.target.classList.contains("eliminarFila"))
-{
-e.target.closest("tr").remove();
-}
+$(this).closest("tr").remove();
 
 });
 
-</script>
+$(document).on("change",".productoSelect",function(){
 
-<script>
+let fila = $(this).closest("tr");
+let idProducto = $(this).val();
 
-    document.addEventListener("change", function (e) {
+fetch("/Ajuste/ObtenerStock?idProducto=" + idProducto)
+.then(res => res.json())
+.then(stock => {
 
-        if (e.target.classList.contains("productoSelect")) {
-            let fila = e.target.closest("tr");
+fila.find(".stockActual").val(stock);
 
-            let idProducto = e.target.value;
+actualizarStockFinal(fila);
 
-            fetch("/Ajuste/ObtenerStock?idProducto=" + idProducto)
-                .then(res => res.json())
-                .then(stock => {
+});
 
-                    fila.querySelector(".stockActual").value = stock;
+});
 
-                    let ajuste = fila.querySelector(".ajusteCantidad").value || 0;
+$(document).on("input",".ajusteCantidad",function(){
 
-                    fila.querySelector(".stockFinal").value =
-                        parseInt(stock) + parseInt(ajuste);
+let fila = $(this).closest("tr");
 
-                });
-        }
+actualizarStockFinal(fila);
 
-    });
+});
 
-    document.addEventListener("input", function (e) {
+$(document).ready(function(){
 
-        if (e.target.classList.contains("ajusteCantidad")) {
-            let fila = e.target.closest("tr");
+$(".productoSelect").select2({
+width:'100%'
+});
 
-            let stock = parseInt(fila.querySelector(".stockActual").value || 0);
-            let ajuste = parseInt(e.target.value || 0);
+});
 
-            fila.querySelector(".stockFinal").value = stock + ajuste;
-        }
+    </script>
 
-    });
-
-</script>
+}

@@ -1,43 +1,171 @@
 ﻿@model GestionLogisticaTI.ViewModels.DespachoDetalleViewModel
 
-<h2>Detalle de Despacho</h2>
+<h2 class="mb-4">
+    <i class="bi bi-truck"></i>
+    Detalle de Despacho
+</h2>
 
-<div class="card mb-3">
+
+<div class="card mb-4">
+
     <div class="card-body">
-        <p><strong>ID Pedido:</strong> @Model.IdPedido</p>
-        <p><strong>Cliente:</strong> @Model.Cliente</p>
-        <p><strong>Fecha Pedido:</strong> @Model.Fecha.ToShortDateString()</p>
 
-        @if (Model.FechaDespacho.HasValue)
-        {
-            <p>
-                <strong>Fecha Despacho:</strong>
-                @Model.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
-            </p>
-        }
+        <div class="row">
 
-        <p><strong>Número Guía:</strong> @Model.NumeroGuia</p>
+            <div class="col-md-3">
+
+                <strong>ID Pedido</strong><br />
+
+                <span class="badge bg-secondary">
+                    #@Model.IdPedido
+                </span>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <strong>Cliente</strong><br />
+
+                <i class="bi bi-person"></i>
+                @Model.Cliente
+
+            </div>
+
+            <div class="col-md-2">
+
+                <strong>Fecha Pedido</strong><br />
+
+                @Model.Fecha.ToString("dd/MM/yyyy")
+
+            </div>
+
+            <div class="col-md-3">
+
+                @if (Model.FechaDespacho.HasValue)
+                {
+                    <strong>Fecha Despacho</strong><br />
+
+                    <span class="text-success">
+                        <i class="bi bi-check-circle"></i>
+                        @Model.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                }
+
+            </div>
+
+        </div>
+
+        <hr />
+
+        <div class="row">
+
+            <div class="col-md-4">
+
+                <strong>Número de Guía</strong><br />
+
+                @if (!string.IsNullOrEmpty(Model.NumeroGuia))
+                {
+                    <span class="badge bg-info">
+                        @Model.NumeroGuia
+                    </span>
+                }
+
+            </div>
+
+        </div>
+
     </div>
+
 </div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Detalles)
-        {
-            <tr>
-                <td>@item.Producto</td>
-                <td>@item.Cantidad</td>
-            </tr>
-        }
-    </tbody>
-</table>
 
-<a href="@Url.Action("Index")" class="btn btn-secondary">
-    Volver
-</a>
+<div class="card">
+
+    <div class="card-body">
+
+        <h5 class="mb-3">
+            <i class="bi bi-box-seam"></i>
+            Productos Despachados
+        </h5>
+
+        <table id="tablaDetalleDespacho"
+               class="table table-striped table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+                    <th>Producto</th>
+                    <th width="150">Cantidad</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model.Detalles)
+                {
+                    <tr>
+
+                        <td>
+
+                            <i class="bi bi-box"></i>
+                            @item.Producto
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge bg-primary">
+                                @item.Cantidad
+                            </span>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<div class="mt-3">
+
+    <a href="@Url.Action("Index")"
+       class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+        Volver
+
+    </a>
+
+</div>
+
+@section scripts{
+
+    <script>
+
+$(document).ready(function(){
+
+$('#tablaDetalleDespacho').DataTable({
+
+searching:false,
+lengthChange:false,
+info:false,
+paging:false,
+
+language:{
+url:"//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+}
+
+});
+
+});
+
+    </script>
+
+}

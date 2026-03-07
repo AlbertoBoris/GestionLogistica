@@ -4,82 +4,216 @@
     ViewBag.Title = "Detalle Pedido";
 }
 
-<h2>Detalle del Pedido</h2>
+<h2 class="mb-4">
+    <i class="bi bi-receipt"></i>
+    Detalle del Pedido
+</h2>
 
-<div class="card mb-3">
+
+<div class="card mb-4">
+
     <div class="card-body">
-        <p><strong>ID Pedido:</strong> @Model.IdPedido</p>
-        <p>
-            <strong>Fecha Registro:</strong>
-            @Convert.ToDateTime(ViewBag.Fecha).ToString("dd/MM/yyyy")
-        </p>
 
-        @if (Model.FechaDespacho.HasValue)
-        {
-            <p>
-                <strong>Fecha Despacho:</strong>
-                @Model.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
-            </p>
-        }
-        <p><strong>Cliente:</strong> @ViewBag.Cliente</p>
-        <p>
-            <strong>Estado:</strong>
-            @if (ViewBag.Estado == "Pendiente")
-            {
-                <span class="badge bg-warning text-dark">Pendiente</span>
-            }
-            else if (ViewBag.Estado == "Autorizado")
-            {
-                <span class="badge bg-primary">Autorizado</span>
-            }
-            else if (ViewBag.Estado == "Despachado")
-            {
-                <span class="badge bg-success">Despachado</span>
-            }
-            else if (ViewBag.Estado == "Cancelado")
-            {
-                <span class="badge bg-secondary">Cancelado</span>
-            }
-        </p>
+        <div class="row">
+
+            <div class="col-md-3">
+
+                <strong>ID Pedido</strong><br />
+
+                <span class="badge bg-secondary">
+                    #@Model.IdPedido
+                </span>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <strong>Fecha Registro</strong><br />
+
+                @Convert.ToDateTime(ViewBag.Fecha).ToString("dd/MM/yyyy")
+
+            </div>
+
+            <div class="col-md-3">
+
+                @if (Model.FechaDespacho.HasValue)
+                {
+                    <strong>Fecha Despacho</strong><br />
+
+                    <span class="text-success">
+                        <i class="bi bi-truck"></i>
+                        @Model.FechaDespacho.Value.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                }
+
+            </div>
+
+            <div class="col-md-3">
+
+                <strong>Cliente</strong><br />
+
+                <i class="bi bi-person"></i>
+                @ViewBag.Cliente
+
+            </div>
+
+        </div>
+
+
+        <hr />
+
+
+        <div class="row">
+
+            <div class="col-md-3">
+
+                <strong>Estado</strong><br />
+
+                @if (ViewBag.Estado == "Pendiente")
+                {
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-hourglass"></i>
+                        Pendiente
+                    </span>
+                }
+                else if (ViewBag.Estado == "Autorizado")
+                {
+                    <span class="badge bg-primary">
+                        <i class="bi bi-check-circle"></i>
+                        Autorizado
+                    </span>
+                }
+                else if (ViewBag.Estado == "Despachado")
+                {
+                    <span class="badge bg-success">
+                        <i class="bi bi-truck"></i>
+                        Despachado
+                    </span>
+                }
+                else if (ViewBag.Estado == "Cancelado")
+                {
+                    <span class="badge bg-secondary">
+                        <i class="bi bi-x-circle"></i>
+                        Cancelado
+                    </span>
+                }
+
+            </div>
+
+        </div>
+
     </div>
+
 </div>
 
-<h4>Productos</h4>
 
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Detalles)
-        {
-            <tr>
-                <td>@item.Producto</td>
-                <td>@item.Cantidad</td>
-            </tr>
-        }
-    </tbody>
-</table>
 
-<br />
+<div class="card">
 
-@if (ViewBag.Estado == "Pendiente")
-{
-    <a href="@Url.Action("Edit", new { id = Model.IdPedido })"
-       class="btn btn-primary">
-        Editar
+    <div class="card-body">
+
+        <h5 class="mb-3">
+            <i class="bi bi-box-seam"></i>
+            Productos del Pedido
+        </h5>
+
+        <table id="tablaDetallePedido"
+               class="table table-striped table-hover align-middle">
+
+            <thead class="table-dark">
+
+                <tr>
+                    <th>Producto</th>
+                    <th width="120">Cantidad</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model.Detalles)
+                {
+                    <tr>
+
+                        <td>
+                            <i class="bi bi-box"></i>
+                            @item.Producto
+                        </td>
+
+                        <td>
+                            <span class="badge bg-info">
+                                @item.Cantidad
+                            </span>
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+
+<div class="mt-3">
+
+    @if (ViewBag.Estado == "Pendiente")
+    {
+
+        <a href="@Url.Action("Edit", new { id = Model.IdPedido })"
+           class="btn btn-warning">
+
+            <i class="bi bi-pencil"></i>
+            Editar
+
+        </a>
+
+        <a href="@Url.Action("Cancelar", new { id = Model.IdPedido })"
+           class="btn btn-danger"
+           onclick="return confirm('¿Seguro que desea cancelar este pedido?');">
+
+            <i class="bi bi-x-circle"></i>
+            Cancelar
+
+        </a>
+
+    }
+
+    <a href="@Url.Action("Index")"
+       class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+        Volver
+
     </a>
 
-    <a href="@Url.Action("Cancelar", new { id = Model.IdPedido })"
-       class="btn btn-danger"
-       onclick="return confirm('¿Seguro que desea cancelar este pedido?');">
-        Cancelar
-    </a>
+</div>
+
+@section scripts{
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#tablaDetallePedido').DataTable({
+
+                searching: false,
+                lengthChange: false,
+                info: false,
+                paging: false,
+
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
+
+            });
+
+        });
+
+    </script>
+
 }
-
-<a href="@Url.Action("Index")" class="btn btn-secondary">
-    Volver
-</a>

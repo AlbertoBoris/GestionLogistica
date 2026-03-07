@@ -1,10 +1,14 @@
 ﻿@model List<GestionLogisticaTI.ViewModels.PedidoAutorizacionViewModel>
 
-<h2>Autorizar Pedidos</h2>
+<h2 class="mb-4">
+    <i class="bi bi-check2-square"></i>
+    Autorizar Pedidos
+</h2>
 
 @if (TempData["Mensaje"] != null)
 {
     <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i>
         @TempData["Mensaje"]
     </div>
 }
@@ -12,51 +16,115 @@
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle"></i>
         @TempData["Error"]
     </div>
 }
 
-<table class="table table-bordered">
+<div class="card">
 
-    <thead>
-        <tr>
-            <th>ID Pedido</th>
-            <th>Fecha</th>
-            <th>Cliente</th>
-            <th>Items</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
+    <div class="card-body">
 
-    <tbody>
+        <table id="tablaPedidos"
+               class="table table-striped table-hover align-middle">
 
-        @foreach (var item in Model)
-        {
-            <tr>
+            <thead class="table-dark">
 
-                <td>@item.IdPedido</td>
-                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                <td>@item.Cliente</td>
-                <td>@item.CantidadItems</td>
+                <tr>
+                    <th>ID Pedido</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Items</th>
+                    <th width="200">Acciones</th>
+                </tr>
 
-                <td>
+            </thead>
 
-                    <a href="@Url.Action("Detalle", new { id = item.IdPedido })"
-                       class="btn btn-info btn-sm">
-                        Ver Detalle
-                    </a>
+            <tbody>
 
-                    <a href="@Url.Action("Autorizar", new { id = item.IdPedido })"
-                       class="btn btn-success btn-sm"
-                       onclick="return confirm('¿Desea autorizar este pedido?');">
-                        Autorizar
-                    </a>
+                @foreach (var item in Model)
+                {
+                    <tr>
 
-                </td>
+                        <td>
+                            <span class="badge bg-secondary">
+                                #@item.IdPedido
+                            </span>
+                        </td>
 
-            </tr>
+                        <td>
+                            @item.Fecha.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td>
+                            <i class="bi bi-person"></i>
+                            @item.Cliente
+                        </td>
+
+                        <td>
+                            <span class="badge bg-info">
+                                @item.CantidadItems
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <a href="@Url.Action("Detalle", new { id = item.IdPedido })"
+                               class="btn btn-info btn-sm">
+
+                                <i class="bi bi-eye"></i>
+
+                            </a>
+
+                            <a href="@Url.Action("Autorizar", new { id = item.IdPedido })"
+                               class="btn btn-success btn-sm"
+                               onclick="return confirmarAutorizacion();">
+
+                                <i class="bi bi-check-circle"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+@section scripts{
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#tablaPedidos').DataTable({
+
+                pageLength: 10,
+
+                searching: false,
+                lengthChange: false,
+                info: false,
+
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
+
+            });
+
+        });
+
+        function confirmarAutorizacion() {
+
+            return confirm("¿Desea autorizar este pedido?");
+
         }
 
-    </tbody>
+    </script>
 
-</table>
+}

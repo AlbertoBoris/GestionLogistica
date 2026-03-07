@@ -1,75 +1,197 @@
 ﻿@model GestionLogisticaTI.ViewModels.ReporteLogisticoViewModel
 
-<h2>Generar Reporte Logístico</h2>
+<h2 class="mb-4">
+    <i class="bi bi-file-earmark-bar-graph"></i>
+    Generar Reporte Logístico
+</h2>
 
-@using (Html.BeginForm("Index", "ReporteLogistico", FormMethod.Get))
-{
-    <div class="row mb-3">
 
-        <div class="col-md-4">
-            @Html.DropDownListFor(m => m.TipoReporte,
-                               Model.TiposReporte,
-                               "-- Seleccione Reporte --",
-                               new { @class = "form-control" })
-        </div>
+<div class="card mb-4">
 
-        <div class="col-md-2">
-            <input type="date"
-                   name="fechaInicio"
-                   value="@(Model.FechaInicio?.ToString("yyyy-MM-dd"))"
-                   class="form-control" />
-        </div>
+    <div class="card-body">
 
-        <div class="col-md-2">
-            <input type="date"
-                   name="fechaFin"
-                   value="@(Model.FechaFin?.ToString("yyyy-MM-dd"))"
-                   class="form-control" />
-        </div>
+        @using (Html.BeginForm("Index", "ReporteLogistico", FormMethod.Get))
+        {
 
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary">
-                Generar
-            </button>
-        </div>
+            <div class="row">
 
-        <div class="col-md-2">
-            @if (Model.Resultados != null && Model.Resultados.Count > 0)
-            {
-                <a class="btn btn-success mb-3"
-                   href="@Url.Action("DescargarPDF","ReporteLogistico",
-       new { tipoReporte = Model.TipoReporte,
-             fechaInicio = Model.FechaInicio,
-             fechaFin = Model.FechaFin })">
+                <div class="col-md-4 mb-2">
 
-                    Descargar PDF
-                </a>
-            }
-        </div>
+                    <label class="form-label">Tipo de Reporte</label>
+
+                    @Html.DropDownListFor(m => m.TipoReporte,
+                                        Model.TiposReporte,
+                                        "-- Seleccione Reporte --",
+                                        new { @class = "form-control" })
+
+                </div>
+
+                <div class="col-md-2 mb-2">
+
+                    <label class="form-label">Fecha Inicio</label>
+
+                    <input type="date"
+                           name="fechaInicio"
+                           value="@(Model.FechaInicio?.ToString("yyyy-MM-dd"))"
+                           class="form-control" />
+
+                </div>
+
+                <div class="col-md-2 mb-2">
+
+                    <label class="form-label">Fecha Fin</label>
+
+                    <input type="date"
+                           name="fechaFin"
+                           value="@(Model.FechaFin?.ToString("yyyy-MM-dd"))"
+                           class="form-control" />
+
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end mb-2">
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+
+                        <i class="bi bi-search"></i>
+                        Generar
+
+                    </button>
+
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end mb-2">
+
+                    @if (Model.Resultados != null && Model.Resultados.Count > 0)
+                    {
+                        <a class="btn btn-danger w-100"
+                           href="@Url.Action("DescargarPDF","ReporteLogistico",
+new {
+tipoReporte = Model.TipoReporte,
+fechaInicio = Model.FechaInicio,
+fechaFin = Model.FechaFin
+})">
+
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            PDF
+
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+
+        }
+
     </div>
-}
+
+</div>
+
 
 @if (Model.Resultados != null && Model.Resultados.Count > 0)
 {
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                @foreach (var col in ((IDictionary<string, object>)Model.Resultados[0]).Keys)
-                {
-                    <th>@col</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var row in Model.Resultados)
-            {
-                <tr>
-                    @foreach (var value in ((IDictionary<string, object>)row).Values)
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h5 class="mb-0">
+                    <i class="bi bi-table"></i>
+                    Vista previa del reporte
+                </h5>
+
+                <div id="excelBtnArea"></div>
+
+            </div>
+
+            <table id="tablaReporte"
+                   class="table table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        @foreach (var col in ((IDictionary<string, object>)Model.Resultados[0]).Keys)
+                        {
+                            <th>@col</th>
+                        }
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var row in Model.Resultados)
                     {
-                        <td>@value</td>
+                        <tr>
+
+                            @foreach (var value in ((IDictionary<string, object>)row).Values)
+                            {
+                                <td>@value</td>
+                            }
+
+                        </tr>
                     }
-                </tr>
-            }
-        </tbody>
-    </table>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+}
+
+@section scripts{
+
+    <script>
+
+        $(document).ready(function () {
+
+            var table = $('#tablaReporte').DataTable({
+
+                pageLength: 10,
+
+                searching: false,
+                lengthChange: false,
+                info: false,
+
+                dom: 't',
+
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                        className: 'btn btn-success'
+                    }
+                ],
+
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
+
+            });
+
+            // renderizar el botón en el contenedor derecho
+            new $.fn.dataTable.Buttons(table, {
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                        className: 'btn btn-success'
+                    }
+                ]
+            });
+
+            table.buttons(0, null).container().appendTo('#excelBtnArea');
+
+        });
+
+    </script>
+
 }
