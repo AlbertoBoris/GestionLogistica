@@ -54,6 +54,7 @@ namespace GestionLogisticaTI.Controllers
         [HttpPost]
         public ActionResult Registrar(AjusteInventarioViewModel model)
         {
+
             using (SqlConnection conn = ConexionBD.ObtenerConexion())
             {
                 SqlCommand cmd = new SqlCommand("sp_Movimiento_InsertarAjuste", conn);

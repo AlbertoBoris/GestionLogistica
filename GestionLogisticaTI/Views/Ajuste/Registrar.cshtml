@@ -20,7 +20,7 @@
 
     <div class="card-body">
 
-        <form method="post">
+        <form method="post" novalidate>
 
             <div class="row">
 
@@ -32,9 +32,10 @@
                     </label>
 
                     <input name="NumeroDocumento"
+                           id="txtNumeroDocumento"
                            class="form-control"
                            required />
-
+                    <span id="errNumeroDocumento" class="text-danger" style="font-size: 12px;"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -45,9 +46,10 @@
                     </label>
 
                     <input name="Motivo"
+                           id="txtMotivo"
                            class="form-control"
                            required />
-
+                    <span id="errMotivo" class="text-danger" style="font-size: 12px;"></span>
                 </div>
 
             </div>
@@ -97,6 +99,7 @@
                             <input type="number"
                                    name="Detalles[0].CantidadAjuste"
                                    class="form-control ajusteCantidad" />
+                            <span class="text-danger err-especifico" style="font-size: 10px; display: block;"></span>
                         </td>
 
                         <td>
@@ -128,14 +131,20 @@
                 Agregar Producto
 
             </button>
+            <div id="errTablaVacia" class="text-danger" style="font-size: 12px; margin-top: 5px;"></div>
 
             <hr>
+                        <!--
+                    <button class="btn btn-warning">
 
-            <button class="btn btn-warning">
+                    <i class="bi bi-tools"></i>
+                    Registrar Ajuste
 
-                <i class="bi bi-tools"></i>
-                Registrar Ajuste
+                </button>
 
+                    -->
+            <button type="button" class="btn btn-warning" id="btnEjecutarAjuste">
+                <i class="bi bi-tools"></i> Registrar Ajuste
             </button>
 
             <a href="@Url.Action("Index","Producto")"
@@ -266,6 +275,52 @@ width:'100%'
 });
 
 });
+    
+        $("#btnEjecutarAjuste").click(function (e) {
+            let esValido = true;
+
+            $(".text-danger").text("");
+            $(".form-control").removeClass("is-invalid");
+
+            const filas = $("#tablaAjuste tbody tr").length;
+            if (filas === 0) {
+                $("#errTablaVacia").text("No se puede registrar un ajuste sin productos.");
+                esValido = false;
+            }
+
+            $(".ajusteCantidad").each(function () {
+                const valor = parseFloat($(this).val());
+                const mensajeError = $(this).siblings(".err-especifico");
+
+                if (isNaN(valor) || valor === 0) {
+                    $(this).addClass("is-invalid");
+                    mensajeError.text("El ajuste no puede ser 0 o estar vacío.");
+                    esValido = false;
+                }
+            });
+
+            if ($("#txtNumeroDocumento").val().trim().length !== 8) {
+                $("#errNumeroDocumento").text("Ingrese exactamente 8 números.");
+                $("#txtNumeroDocumento").addClass("is-invalid");
+                esValido = false;
+            }
+
+            if ($("#txtMotivo").val().trim() === "") {
+                $("#errMotivo").text(" El motivo es obligatorio.");
+                $("#txtMotivo").addClass("is-invalid");
+                esValido = false;
+            }
+
+            if (esValido) {
+                console.log("Todo correcto, enviando formulario...");
+                $(this).closest("form").submit();
+            } else {
+                console.log("Faltan datos, deteniendo envío.");
+                if ($("#loaderOverlay").length > 0) $("#loaderOverlay").hide();
+                e.preventDefault();
+                return false;
+            }
+        }); 
 
     </script>
 

@@ -34,7 +34,7 @@
                     <input name="NumeroDocumento"
                            class="form-control"
                            placeholder="Factura / Guía" />
-
+                    <span id="errNumeroDocumento" class="text-danger" style="font-size: 12px;"></span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -95,7 +95,7 @@
                                    name="Detalles[0].Cantidad"
                                    class="form-control cantidad"
                                    min="1" />
-
+                            <span class="text-danger err-cantidad" style="font-size: 11px;"></span>
                         </td>
 
                         <td>
@@ -153,6 +153,8 @@
     </div>
 
 </div>
+
+
 
 @section scripts{
 
@@ -291,6 +293,53 @@ width:'100%'
 
 });
 
-    </script>
+        $("form").on("submit", function (e) {
+            let esValido = true;
 
+            $(".text-danger").text("");
+            $(".form-control").removeClass("is-invalid");
+
+            const inputDoc = $("input[name='NumeroDocumento']");
+            const valDoc = inputDoc.val().trim();
+            if (valDoc.length !== 8 || isNaN(valDoc)) {
+                $("#errNumeroDocumento").text(" El documento debe tener exactamente 8 números.");
+                inputDoc.addClass("is-invalid");
+                esValido = false;
+            }
+
+            const totalFilas = $("#tablaProductos tbody tr").length;
+            if (totalFilas === 0) {
+               
+                esValido = false;
+            }
+
+            $(".cantidad").each(function () {
+                const cant = parseInt($(this).val());
+                const spanError = $(this).siblings(".err-cantidad"); 
+
+                if (isNaN(cant) || cant <= 0) {
+                    spanError.text("La cantidad de ser mayor a 0");
+                    $(this).addClass("is-invalid");
+                    esValido = false;
+                }
+            });
+
+            if (!esValido) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                $("#loaderOverlay").hide(); 
+                return false;
+            }
+        });
+    
+    </script>
+    
 }
+
+
+
+
+
+
+
+

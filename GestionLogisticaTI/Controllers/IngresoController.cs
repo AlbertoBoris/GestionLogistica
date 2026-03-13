@@ -54,6 +54,11 @@ namespace GestionLogisticaTI.Controllers
         [HttpPost]
         public ActionResult RegistrarIngreso(IngresoViewModel model)
         {
+            if (string.IsNullOrEmpty(model.NumeroDocumento))
+            {
+                TempData["Error"] = "El número de documento es requerido.";
+                return View(model);
+            }
             using (SqlConnection conn = ConexionBD.ObtenerConexion())
             {
                 SqlCommand cmd = new SqlCommand("sp_Movimiento_InsertarIngreso", conn);
