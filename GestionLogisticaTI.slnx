@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="GestionLogisticaTI.Tests/GestionLogisticaTI.Tests.csproj" Id="6c796754-7e0d-446e-ada5-24f2afb1ab91" />
   <Project Path="GestionLogisticaTI/GestionLogisticaTI.csproj" Id="ea8fb455-a24f-481f-a6d8-4fdad7752516" />
 </Solution>
