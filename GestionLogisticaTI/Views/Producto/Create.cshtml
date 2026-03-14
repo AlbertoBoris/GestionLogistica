@@ -107,3 +107,53 @@
     </div>
 
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+           
+            $("form").on("submit", function (e) {
+                let esValido = true;
+              
+                const nombreInput = $("#Nombre");
+                const nombreError = $("span[data-valmsg-for='Nombre']");
+                const regexNombre = /^[a-zA-Z0-9 ]+$/;
+                if (!regexNombre.test(nombreInput.val())) {
+                    nombreError.text("El nombre no permite caracteres especiales.");
+                    nombreInput.addClass("is-invalid");
+                    esValido = false;
+                }
+
+                const stockInput = $("#StockMinimo");
+                const stockError = $("span[data-valmsg-for='StockMinimo']");
+                if (parseInt(stockInput.val()) < 0 || stockInput.val() === "") {
+                    stockError.text("El stock no puede ser negativo o vacío.");
+                    stockInput.addClass("is-invalid");
+                    esValido = false;
+                }
+
+                const ubiInput = $("#Ubicacion");
+                const ubiError = $("span[data-valmsg-for='Ubicacion']");
+                const regexUbi = /^Rack [A-Z][1-9]$/;
+                if (!regexUbi.test(ubiInput.val())) {
+                    ubiError.text("Formato requerido: 'Rack A1'.");
+                    ubiInput.addClass("is-invalid");
+                    esValido = false;
+                }
+
+                if (!esValido) {
+                    e.preventDefault();
+
+                    
+                    $("#loaderOverlay").hide();
+
+                    return false;
+                }
+            });
+
+            $("#Nombre, #StockMinimo, #Ubicacion").on("input", function () {
+                $(this).removeClass("is-invalid");
+                $("span[data-valmsg-for='" + $(this).attr('id') + "']").text("");
+            });
+        });
+    </script>
+}
