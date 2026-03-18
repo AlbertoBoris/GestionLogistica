@@ -75,23 +75,44 @@ namespace GestionLogisticaTI.Controllers
         [HttpPost]
         public ActionResult Create(UsuarioViewModel model)
         {
-            string passwordHash = PasswordHelper.HashPassword(model.Password);
-
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            if (!ModelState.IsValid)
             {
-                SqlCommand cmd = new SqlCommand("sp_Usuario_Insertar", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@nombre", model.Nombre);
-                cmd.Parameters.AddWithValue("@correo", model.Correo);
-                cmd.Parameters.AddWithValue("@passwordHash", passwordHash);
-                cmd.Parameters.AddWithValue("@idRol", model.IdRol);
-
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                model.Roles = ObtenerRoles(); // 🔥 importante recargar
+                return View(model);
             }
 
-            return RedirectToAction("Index");
+            try
+            {
+                string passwordHash = PasswordHelper.HashPassword(model.Password);
+
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    SqlCommand cmd = new SqlCommand("sp_Usuario_Insertar", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@nombre", model.Nombre);
+                    cmd.Parameters.AddWithValue("@correo", model.Correo);
+                    cmd.Parameters.AddWithValue("@passwordHash", passwordHash);
+                    cmd.Parameters.AddWithValue("@idRol", model.IdRol);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+
+                TempData["Mensaje"] = "Usuario registrado correctamente.";
+                return RedirectToAction("Index");
+            }
+            catch (SqlException ex)
+            {
+                ModelState.AddModelError("", "Error al registrar usuario. Puede que el correo ya exista.");
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Ocurrió un error inesperado.");
+            }
+
+            model.Roles = ObtenerRoles();
+            return View(model);
         }
         public ActionResult Edit(int id)
         {
@@ -121,37 +142,58 @@ namespace GestionLogisticaTI.Controllers
         [HttpPost]
         public ActionResult Edit(UsuarioViewModel model)
         {
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            if (!ModelState.IsValid)
             {
-                conn.Open();
-
-                // 1️⃣ Actualizar datos básicos
-                SqlCommand cmd = new SqlCommand("sp_Usuario_Actualizar", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@idUsuario", model.IdUsuario);
-                cmd.Parameters.AddWithValue("@nombre", model.Nombre);
-                cmd.Parameters.AddWithValue("@correo", model.Correo);
-                cmd.Parameters.AddWithValue("@idRol", model.IdRol);
-
-                cmd.ExecuteNonQuery();
-
-                // 2️⃣ Si ingresó nueva contraseña, actualizar
-                if (!string.IsNullOrEmpty(model.Password))
-                {
-                    string hash = HashHelper.GenerarHash(model.Password);
-
-                    SqlCommand cmdPass = new SqlCommand("sp_Usuario_ActualizarPassword", conn);
-                    cmdPass.CommandType = CommandType.StoredProcedure;
-
-                    cmdPass.Parameters.AddWithValue("@idUsuario", model.IdUsuario);
-                    cmdPass.Parameters.AddWithValue("@passwordHash", hash);
-
-                    cmdPass.ExecuteNonQuery();
-                }
+                model.Roles = ObtenerRoles(); 
+                return View(model);
             }
 
-            return RedirectToAction("Index");
+            try
+            {
+                using (SqlConnection conn = ConexionBD.ObtenerConexion())
+                {
+                    conn.Open();
+
+                    // 1️⃣ Actualizar datos básicos
+                    SqlCommand cmd = new SqlCommand("sp_Usuario_Actualizar", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@idUsuario", model.IdUsuario);
+                    cmd.Parameters.AddWithValue("@nombre", model.Nombre);
+                    cmd.Parameters.AddWithValue("@correo", model.Correo);
+                    cmd.Parameters.AddWithValue("@idRol", model.IdRol);
+
+                    cmd.ExecuteNonQuery();
+
+                    // 2️⃣ Actualizar contraseña (solo si se ingresó)
+                    if (!string.IsNullOrWhiteSpace(model.Password))
+                    {
+                        string hash = HashHelper.GenerarHash(model.Password);
+
+                        SqlCommand cmdPass = new SqlCommand("sp_Usuario_ActualizarPassword", conn);
+                        cmdPass.CommandType = CommandType.StoredProcedure;
+
+                        cmdPass.Parameters.AddWithValue("@idUsuario", model.IdUsuario);
+                        cmdPass.Parameters.AddWithValue("@passwordHash", hash);
+
+                        cmdPass.ExecuteNonQuery();
+                    }
+                }
+
+                TempData["Mensaje"] = "Usuario actualizado correctamente.";
+                return RedirectToAction("Index");
+            }
+            catch (SqlException)
+            {
+                ModelState.AddModelError("", "Error al actualizar. El correo podría estar en uso.");
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Ocurrió un error inesperado.");
+            }
+
+            model.Roles = ObtenerRoles();
+            return View(model);
         }
         public ActionResult CambiarEstado(int id)
         {

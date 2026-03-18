@@ -1,13 +1,36 @@
 ﻿
 @model List<GestionLogisticaTI.ViewModels.PedidoListViewModel>
 
-<h2 class="mb-1">
-    <i class="bi bi-cart"></i>
-    Gestión de Pedidos
-</h2>
-<h6 class="mb-4 text-secondary">
-    Registro y administración de pedidos comerciales
-</h6>
+@{
+    var pendientes = Model.Count(x => x.Estado == "Pendiente");
+    var recientes = Model.Count(x => x.Fecha >= DateTime.Now.AddDays(-1));
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="mb-1">
+            <i class="bi bi-cart"></i>
+            Gestión de Pedidos
+        </h2>
+        <h6 class="text-secondary mb-0">
+            Registro y administración de pedidos comerciales
+        </h6>
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <span class="badge bg-warning text-dark p-2">
+            <i class="bi bi-clock"></i> Pendientes: @pendientes
+        </span>
+
+        <span class="badge bg-primary p-2">
+            <i class="bi bi-lightning"></i> Últimas 24h: @recientes
+        </span>
+
+    </div>
+
+</div>
 
 
 <div class="card mb-4">
@@ -103,6 +126,7 @@
 
 
 
+
 <div class="card">
 
     <div class="card-body">
@@ -113,6 +137,7 @@
             <thead class="table-dark">
 
                 <tr>
+                    <th style="display:none;">Prioridad</th>
                     <th>ID</th>
                     <th>Fecha</th>
                     <th>Cliente</th>
@@ -127,7 +152,11 @@
 
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr class="@(item.Fecha >= DateTime.Now.AddDays(-1) ? "table-info" : "")">
+
+                        <td style="display:none;">
+                            @(item.Estado == "Pendiente" ? 1 : 2)
+                        </td>
 
                         <td>
                             <span class="badge bg-secondary">
@@ -135,8 +164,15 @@
                             </span>
                         </td>
 
-                        <td>
+                        <td data-order="@item.Fecha.ToString("yyyy-MM-dd HH:mm:ss")">
+
                             @item.Fecha.ToString("dd/MM/yyyy")
+
+                            @if (item.Fecha >= DateTime.Now.AddDays(-1))
+                            {
+                                <span class="badge bg-info ms-1">Nuevo</span>
+                            }
+
                         </td>
 
                         <td>
@@ -230,10 +266,18 @@
             $('#tablaPedidos').DataTable({
 
                 pageLength: 10,
-
                 searching: false,
                 lengthChange: false,
                 info: false,
+
+                order: [
+                    [0, "asc"],  // prioridad (Pendiente primero)
+                    [2, "desc"]  // fecha reciente
+                ],
+
+                columnDefs: [
+                    { targets: 0, visible: false }
+                ],
 
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"

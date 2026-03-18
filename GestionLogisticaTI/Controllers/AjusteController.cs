@@ -70,8 +70,14 @@ namespace GestionLogisticaTI.Controllers
 
                 foreach (var item in model.Detalles)
                 {
-                    if (item.CantidadAjuste != 0)
-                        tabla.Rows.Add(item.IdProducto, item.CantidadAjuste);
+                    var stockActual = ObtenerStockDesdeBD(item.IdProducto);
+
+                    if (stockActual + item.CantidadAjuste < 0)
+                    {
+                        ModelState.AddModelError("", $"El producto no puede quedar con stock negativo.");
+                        return View(model);
+                    }
+                    tabla.Rows.Add(item.IdProducto, item.CantidadAjuste);
                 }
 
                 SqlParameter param = cmd.Parameters.AddWithValue("@detalles", tabla);
@@ -106,6 +112,28 @@ namespace GestionLogisticaTI.Controllers
             }
 
             return Json(stock, JsonRequestBehavior.AllowGet);
+        }
+
+        private int ObtenerStockDesdeBD(int idProducto)
+        {
+            int stock = 0;
+
+            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            {
+                SqlCommand cmd = new SqlCommand("sp_Producto_ObtenerStock", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@idProducto", idProducto);
+
+                conn.Open();
+                var result = cmd.ExecuteScalar();
+
+                if (result != null)
+                {
+                    stock = Convert.ToInt32(result);
+                }
+            }
+
+            return stock;
         }
     }
 }

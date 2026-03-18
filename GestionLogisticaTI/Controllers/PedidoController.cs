@@ -123,6 +123,39 @@ namespace GestionLogisticaTI.Controllers
         [HttpPost]
         public ActionResult Create(PedidoCreateViewModel model)
         {
+
+            if (model.IdCliente == 0)
+            {
+                ModelState.AddModelError("", "Debe seleccionar un cliente.");
+            }
+
+            if (model.Detalles == null || !model.Detalles.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto.");
+            }
+
+            if (model.Detalles != null)
+            {
+                foreach (var item in model.Detalles)
+                {
+                    int stock = ObtenerStockDesdeBD(item.IdProducto);
+
+                    if (item.Cantidad > stock)
+                    {
+                        ModelState.AddModelError("", "No hay suficiente stock para uno de los productos.");
+                        break;
+                    }
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Clientes = ObtenerClientes();
+                model.Productos = ObtenerProductos();
+
+                return View(model);
+            }
+
             using (SqlConnection conn = ConexionBD.ObtenerConexion())
             {
                 SqlCommand cmd = new SqlCommand("sp_Pedido_Insertar", conn);
@@ -130,17 +163,13 @@ namespace GestionLogisticaTI.Controllers
 
                 cmd.Parameters.AddWithValue("@idCliente", model.IdCliente);
 
-                // Crear DataTable para TVP
                 DataTable dt = new DataTable();
                 dt.Columns.Add("idProducto", typeof(int));
                 dt.Columns.Add("cantidad", typeof(int));
 
-                if (model.Detalles != null)
+                foreach (var item in model.Detalles)
                 {
-                    foreach (var item in model.Detalles)
-                    {
-                        dt.Rows.Add(item.IdProducto, item.Cantidad);
-                    }
+                    dt.Rows.Add(item.IdProducto, item.Cantidad);
                 }
 
                 SqlParameter tvp = cmd.Parameters.AddWithValue("@Detalles", dt);
@@ -151,53 +180,40 @@ namespace GestionLogisticaTI.Controllers
                 cmd.ExecuteNonQuery();
             }
 
+            TempData["Mensaje"] = "Pedido registrado correctamente";
             return RedirectToAction("Index");
-        }
-        public ActionResult Edit(int id)
-        {
-            PedidoCreateViewModel model = new PedidoCreateViewModel();
-            model.Detalles = new List<PedidoDetalleViewModel>();
-
-            using (SqlConnection conn = ConexionBD.ObtenerConexion())
-            {
-                SqlCommand cmd = new SqlCommand("sp_Pedido_ObtenerDetalle", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@idPedido", id);
-
-                conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                // PRIMER RESULTSET → Cabecera
-                if (reader.Read())
-                {
-                    model.IdPedido = Convert.ToInt32(reader["idPedido"]);
-                    model.IdCliente = Convert.ToInt32(reader["idCliente"]);
-                }
-
-                // SEGUNDO RESULTSET → Detalle
-                reader.NextResult();
-
-                while (reader.Read())
-                {
-                    model.Detalles.Add(new PedidoDetalleViewModel
-                    {
-                        IdProducto = Convert.ToInt32(reader["idProducto"]),
-                        Producto = reader["Producto"].ToString(),
-                        Cantidad = Convert.ToInt32(reader["cantidad"])
-                    });
-                }
-            }
-
-            model.Clientes = ObtenerClientes();
-            model.Productos = ObtenerProductos();
-
-            return View(model);
         }
 
         /* Editar Pedido */
         [HttpPost]
         public ActionResult Edit(PedidoCreateViewModel model)
         {
+            // VALIDACIONES
+            if (model.IdCliente == 0)
+                ModelState.AddModelError("", "Debe seleccionar un cliente.");
+
+            if (model.Detalles == null || !model.Detalles.Any())
+                ModelState.AddModelError("", "Debe agregar al menos un producto.");
+
+            if (model.Detalles != null)
+            {
+                foreach (var item in model.Detalles)
+                {
+                    if (item.Cantidad <= 0)
+                    {
+                        ModelState.AddModelError("", "Cantidad inválida.");
+                        break;
+                    }
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Clientes = ObtenerClientes();
+                model.Productos = ObtenerProductos();
+                return View(model);
+            }
+
             try
             {
                 using (SqlConnection conn = ConexionBD.ObtenerConexion())
@@ -208,17 +224,13 @@ namespace GestionLogisticaTI.Controllers
                     cmd.Parameters.AddWithValue("@idPedido", model.IdPedido);
                     cmd.Parameters.AddWithValue("@idCliente", model.IdCliente);
 
-                    // Crear DataTable para TVP
                     DataTable dt = new DataTable();
                     dt.Columns.Add("idProducto", typeof(int));
                     dt.Columns.Add("cantidad", typeof(int));
 
-                    if (model.Detalles != null)
+                    foreach (var item in model.Detalles)
                     {
-                        foreach (var item in model.Detalles)
-                        {
-                            dt.Rows.Add(item.IdProducto, item.Cantidad);
-                        }
+                        dt.Rows.Add(item.IdProducto, item.Cantidad);
                     }
 
                     SqlParameter tvp = cmd.Parameters.AddWithValue("@Detalles", dt);
@@ -305,6 +317,27 @@ namespace GestionLogisticaTI.Controllers
             }
 
             return View(model);
+        }
+        private int ObtenerStockDesdeBD(int idProducto)
+        {
+            int stock = 0;
+
+            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            {
+                SqlCommand cmd = new SqlCommand("sp_Producto_ObtenerStock", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@idProducto", idProducto);
+
+                conn.Open();
+                var result = cmd.ExecuteScalar();
+
+                if (result != null)
+                {
+                    stock = Convert.ToInt32(result);
+                }
+            }
+
+            return stock;
         }
     }
 }

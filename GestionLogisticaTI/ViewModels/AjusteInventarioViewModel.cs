@@ -8,6 +8,9 @@ namespace GestionLogisticaTI.ViewModels
 {
     public class AjusteInventarioViewModel
     {
+        [Required]
+        [StringLength(16, ErrorMessage = "Máximo 16 caracteres")]
+        [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Solo letras y números")]
         public string NumeroDocumento {  get; set; }
 
         [Required(ErrorMessage = "Debe ingresar motivo del ajuste")]

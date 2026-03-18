@@ -8,8 +8,9 @@ namespace GestionLogisticaTI.ViewModels
 {
     public class IngresoViewModel
     {
-        [Required(ErrorMessage = "Debe ingresar número de documento")]
-        [StringLength(50)]
+        [Required]
+        [StringLength(16, ErrorMessage = "Máximo 16 caracteres")]
+        [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Solo letras y números")]
         public string NumeroDocumento { get; set; }
 
         [StringLength(100)]

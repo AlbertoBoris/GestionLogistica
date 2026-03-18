@@ -8,6 +8,10 @@
     Vista de inventario disponible en tiempo real
 </h6>
 
+@{
+    var totalCriticos = Model.Count(x => x.EsCritico);
+}
+
 <div class="card mb-4">
 
     <div class="card-body">
@@ -38,6 +42,7 @@
 
                 </div>
 
+
                 <div class="col-md-2 mb-2">
 
                     <a href="@Url.Action("Index")"
@@ -58,6 +63,31 @@
 
 </div>
 
+@if (totalCriticos > 0)
+{
+    <div class="alert alert-danger d-flex align-items-center">
+
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+        <strong>
+            @totalCriticos producto(s) en estado crítico
+        </strong>
+
+    </div>
+}
+else
+{
+    <div class="alert alert-success d-flex align-items-center">
+
+        <i class="bi bi-check-circle-fill me-2"></i>
+
+        <strong>
+            Todo el inventario está en estado óptimo
+        </strong>
+
+    </div>
+}
+
 
 <div class="card">
 
@@ -69,6 +99,7 @@
             <thead class="table-dark">
 
                 <tr>
+                    <th style="display:none;">Critico</th>
                     <th>Producto</th>
                     <th>Stock Actual</th>
                     <th>Stock Mínimo</th>
@@ -83,6 +114,10 @@
                 @foreach (var item in Model)
                 {
                     <tr class="@(item.EsCritico ? "table-danger" : "")">
+
+                        <td style="display:none;">
+                            @(item.EsCritico ? 1 : 0)
+                        </td>
 
                         <td>
 
@@ -157,23 +192,27 @@
 
     <script>
 
-$(document).ready(function(){
+        $(document).ready(function () {
 
-$('#tablaStock').DataTable({
+            $('#tablaStock').DataTable({
 
-pageLength:10,
+                pageLength: 10,
+                searching: false,
+                lengthChange: false,
+                info: false,
 
-searching:false,
-lengthChange:false,
-info:false,
+                order: [[0, "desc"]], // 👈 columna oculta (críticos primero)
 
-language:{
-url:"//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
-}
+                columnDefs: [
+                    { targets: 0, visible: false } // 👈 ocultar columna
+                ],
 
-});
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
 
-});
+            });
+        });
 
     </script>
 

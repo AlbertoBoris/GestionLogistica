@@ -8,6 +8,14 @@
     Comparación stock sistema vs físico
 </h6>
 
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i>
+        @TempData["Mensaje"]
+    </div>
+}
+
 <div class="card mb-4">
 
     <div class="card-body">
@@ -46,7 +54,6 @@
     </div>
 
 </div>
-
 
 @using (Html.BeginForm("Aplicar", "Auditoria", FormMethod.Post, new { id = "formAuditoria" }))
 {
@@ -117,7 +124,7 @@
                                        name="[@index].StockFisico"
                                        class="form-control stockFisico"
                                        data-stock="@item.StockActual"
-                                       oninput="calcularDiferencia(this)"
+                                       oninput="calcularDiferencia(this); validarStock(this);"
                                        min="0" />
 
                             </td>
@@ -183,7 +190,10 @@
 
     </div>
 
-
+    <div id="errorAuditoria"
+         class="alert alert-danger"
+         style="display:none;">
+    </div>
 
     <button type="submit"
             class="btn btn-danger mt-2">
@@ -216,16 +226,57 @@
 
         });
 
-        $('#formAuditoria').on('submit', function () {
+        document.addEventListener('keypress', function (e) {
+            if (e.target.classList.contains('stockFisico')) {
+                if (e.key === '-') {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        $('#formAuditoria').on('submit', function (e) {
+
+            let hayError = false;
+
+            $('.stockFisico').each(function () {
+
+                if (this.value !== "" && parseInt(this.value) < 0) {
+                    hayError = true;
+                    $(this).addClass("is-invalid");
+                }
+
+            });
+
+            if (hayError) {
+
+                $('#errorAuditoria')
+                    .text("No se permiten valores negativos.")
+                    .show();
+
+                e.preventDefault();
+                return false;
+            }
 
             var table = $('#tablaAuditoria').DataTable();
-
-            // mostrar todas las filas antes de enviar
             table.page.len(-1).draw();
 
         });
 
+        function validarStock(input) {
 
+            let valor = input.value;
+
+            if (valor !== "" && parseInt(valor) < 0) {
+
+                input.classList.add("is-invalid");
+
+                // opcional: corregir automáticamente
+                input.value = 0;
+
+            } else {
+                input.classList.remove("is-invalid");
+            }
+        }
 
         function calcularDiferencia(input) {
 

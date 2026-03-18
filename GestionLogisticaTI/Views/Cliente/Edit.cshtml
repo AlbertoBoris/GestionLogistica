@@ -5,7 +5,18 @@
     Editar Cliente
 </h2>
 
-@Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <strong>
+            <i class="bi bi-exclamation-triangle"></i>
+            Corrija los siguientes errores:
+        </strong>
+        <ul class="mb-0">
+            @Html.ValidationSummary(false, "", new { @class = "mb-0" })
+        </ul>
+    </div>
+}
 
 @using (Html.BeginForm())
 {

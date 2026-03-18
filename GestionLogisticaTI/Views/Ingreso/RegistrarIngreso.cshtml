@@ -301,10 +301,14 @@ width:'100%'
 
             const inputDoc = $("input[name='NumeroDocumento']");
             const valDoc = inputDoc.val().trim();
-            if (valDoc.length !== 8 || isNaN(valDoc)) {
-                $("#errNumeroDocumento").text(" El documento debe tener exactamente 8 números.");
+
+            if (valDoc.length === 0 || valDoc.length > 16) {
+                $("#errNumeroDocumento").text(" El documento debe tener máximo 16 caracteres.");
                 inputDoc.addClass("is-invalid");
                 esValido = false;
+            } else {
+                $("#errNumeroDocumento").text("");
+                inputDoc.removeClass("is-invalid");
             }
 
             const totalFilas = $("#tablaProductos tbody tr").length;

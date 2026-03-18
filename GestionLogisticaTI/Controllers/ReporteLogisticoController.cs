@@ -27,6 +27,25 @@ namespace GestionLogisticaTI.Controllers
 
             if (!string.IsNullOrEmpty(tipoReporte))
             {
+                var reportesConFecha = new[] { "Movimientos", "Ajustes", "Despachos", "Consolidado" };
+
+                if (reportesConFecha.Contains(tipoReporte))
+                {
+                    if (fechaInicio == null || fechaFin == null)
+                    {
+                        ModelState.AddModelError("", "Debe seleccionar un rango de fechas para este reporte.");
+                        model.Resultados = null;
+                        return View(model);
+                    }
+
+                    if (fechaInicio > fechaFin)
+                    {
+                        ModelState.AddModelError("", "La fecha inicio no puede ser mayor a la fecha fin.");
+                        model.Resultados = null;
+                        return View(model);
+                    }
+                }
+
                 model.Resultados = ObtenerDatos(tipoReporte, fechaInicio, fechaFin);
             }
 

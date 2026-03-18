@@ -1,12 +1,41 @@
 ﻿@model List<GestionLogisticaTI.ViewModels.ClienteViewModel>
+@{
+    var total = Model.Count();
+    var activos = Model.Count(x => x.EsActivo);
+    var inactivos = total - activos;
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-<h2 class="mb-1">
-    <i class="bi bi-people"></i>
-    Gestión de Clientes
-</h2>
-<h6 class="mb-4 text-secondary">
-    Administración de clientes registrados en el sistema
-</h6>
+    <div>
+        <h2 class="mb-1">
+            <i class="bi bi-people"></i>
+            Gestión de Clientes
+        </h2>
+        <h6 class="text-secondary mb-0">
+            Administración de clientes registrados en el sistema
+        </h6>
+    </div>
+
+    <div class="d-flex gap-3">
+
+        <div class="text-center">
+            <small class="text-muted">Total</small>
+            <div class="fw-bold">@total</div>
+        </div>
+
+        <div class="text-center">
+            <small class="text-muted">Activos</small>
+            <div class="fw-bold text-success">@activos</div>
+        </div>
+
+        <div class="text-center">
+            <small class="text-muted">Inactivos</small>
+            <div class="fw-bold text-secondary">@inactivos</div>
+        </div>
+
+    </div>
+
+</div>
 
 <div class="card mb-4">
 
@@ -116,64 +145,64 @@
 
                 @foreach (var item in Model)
                 {
-                    <tr class="@(item.EsActivo ? "" : "table-secondary")">
+                   <tr class="@(item.EsActivo ? "" : "table-light text-muted")">
 
-                        <td>
-                            <i class="bi bi-person"></i>
-                            @item.Nombre
-                        </td>
+                       <td>
+                           <i class="bi bi-person"></i>
+                           @item.Nombre
+                       </td>
 
-                        <td>
-                            @item.RucDni
-                        </td>
+                       <td>
+                           @item.RucDni
+                       </td>
 
-                        <td>
-                            <i class="bi bi-telephone"></i>
-                            @item.Telefono
-                        </td>
+                       <td>
+                           <i class="bi bi-telephone"></i>
+                           @item.Telefono
+                       </td>
 
-                        <td>
-                            <i class="bi bi-geo-alt"></i>
-                            @item.Direccion
-                        </td>
+                       <td>
+                           <i class="bi bi-geo-alt"></i>
+                           @item.Direccion
+                       </td>
 
-                        <td>
+                       <td>
 
-                            @if (item.EsActivo)
-                            {
-                                <span class="badge bg-success">
-                                    Activo
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary">
-                                    Inactivo
-                                </span>
-                            }
+                           @if (item.EsActivo)
+                           {
+                               <span class="badge bg-success">
+                                   Activo
+                               </span>
+                           }
+                           else
+                           {
+                               <span class="badge bg-secondary ms2">
+                                   Inactivo
+                               </span>
+                           }
 
-                        </td>
+                       </td>
 
-                        <td>
+                       <td>
 
-                            <a href="@Url.Action("Edit", new { id = item.IdCliente })"
-                               class="btn btn-warning btn-sm">
+                           <a href="@Url.Action("Edit", new { id = item.IdCliente })"
+                              class="btn btn-warning btn-sm" title="Esitar Cliente">
 
-                                <i class="bi bi-pencil"></i>
+                               <i class="bi bi-pencil"></i>
 
-                            </a>
+                           </a>
 
-                            <a href="@Url.Action("CambiarEstado", new { id = item.IdCliente })"
-                               class="btn btn-secondary btn-sm"
-                               onclick="return confirm('¿Desea cambiar el estado del cliente?');">
+                           <a href="@Url.Action("CambiarEstado", new { id = item.IdCliente })"
+                              class="btn btn-secondary btn-sm"
+                              onclick="return confirm('¿Desea cambiar el estado del cliente?');" title="Cambiar Estado">
 
-                                <i class="bi bi-arrow-repeat"></i>
+                               <i class="bi bi-arrow-repeat"></i>
 
-                            </a>
+                           </a>
 
-                        </td>
+                       </td>
 
-                    </tr>
+                   </tr>
                 }
 
             </tbody>

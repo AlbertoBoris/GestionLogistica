@@ -1,5 +1,12 @@
 ﻿@model GestionLogisticaTI.ViewModels.PedidoCreateViewModel
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @Html.ValidationSummary()
+    </div>
+}
+
 <h2 class="mb-4">
     <i class="bi bi-cart-plus"></i>
     Registrar Pedido
@@ -119,16 +126,13 @@ new { returnUrl = Url.Action("Create","Pedido") })"
 
     </div>
 
-
+    <div id="mensajeError" class="alert alert-danger" style="display:none;"></div>
 
     <div class="mt-3">
 
-        <button type="submit"
-                class="btn btn-primary">
-
+        <button type="button" id="btnGuardar" class="btn btn-primary">
             <i class="bi bi-save"></i>
             Guardar Pedido
-
         </button>
 
         <a href="@Url.Action("Index")"
@@ -149,18 +153,52 @@ new { returnUrl = Url.Action("Create","Pedido") })"
 
         var index = 0;
 
+        function mostrarError(mensaje) {
+            let div = document.getElementById("mensajeError");
+            div.innerText = mensaje;
+            div.style.display = "block";
+        }
+
+        function limpiarError() {
+            let div = document.getElementById("mensajeError");
+            div.innerText = "";
+            div.style.display = "none";
+        }
+
         function agregarProducto() {
 
-            var productoSelect = document.getElementById("productoSelect");
-            var cantidad = document.getElementById("cantidadInput").value;
+            limpiarError();
 
-            if (productoSelect.value === "" || cantidad <= 0 || cantidad === "") {
-                alert("Seleccione producto y cantidad válida");
+            var productoSelect = document.getElementById("productoSelect");
+            var cantidadInput = document.getElementById("cantidadInput");
+
+            var productoValor = productoSelect.value;
+            var productoTexto = productoSelect.options[productoSelect.selectedIndex].text;
+            var cantidad = cantidadInput.value;
+
+            if (productoValor === "") {
+                mostrarError("Seleccione un producto.");
                 return;
             }
 
-            var productoTexto = productoSelect.options[productoSelect.selectedIndex].text;
-            var productoValor = productoSelect.value;
+            if (cantidad === "" || parseInt(cantidad) <= 0) {
+                mostrarError("Ingrese una cantidad válida.");
+                return;
+            }
+
+            let existe = false;
+
+            document.querySelectorAll("#tablaDetalle tbody input[name$='.IdProducto']")
+                .forEach(function (input) {
+                    if (input.value === productoValor) {
+                        existe = true;
+                    }
+                });
+
+            if (existe) {
+                mostrarError("El producto ya fue agregado.");
+                return;
+            }
 
             var tabla = document.querySelector("#tablaDetalle tbody");
 
@@ -168,33 +206,54 @@ new { returnUrl = Url.Action("Create","Pedido") })"
 
             fila.innerHTML = `
 <td>
-${productoTexto}
-<input type="hidden" name="Detalles[${index}].IdProducto" value="${productoValor}" />
+        ${productoTexto}
+        <input type="hidden" name="Detalles[${index}].IdProducto" value="${productoValor}" />
 </td>
 
 <td>
-${cantidad}
-<input type="hidden" name="Detalles[${index}].Cantidad" value="${cantidad}" />
+        ${cantidad}
+        <input type="hidden" name="Detalles[${index}].Cantidad" value="${cantidad}" />
 </td>
 
 <td>
-<button type="button"
-class="btn btn-danger btn-sm"
-onclick="eliminarFila(this)">
-<i class="bi bi-trash"></i>
-</button>
+        <button type="button"
+            class="btn btn-danger btn-sm"
+            onclick="eliminarFila(this)">
+            <i class="bi bi-trash"></i>
+        </button>
 </td>
 `;
 
             index++;
-
-            document.getElementById("cantidadInput").value = "";
-
+            cantidadInput.value = "";
         }
 
         function eliminarFila(btn) {
             btn.closest("tr").remove();
         }
+
+        // VALIDACIÓN FINAL
+        document.getElementById("btnGuardar").addEventListener("click", function () {
+
+            limpiarError();
+
+            let cliente = document.querySelector("[name='IdCliente']").value;
+            let filas = document.querySelectorAll("#tablaDetalle tbody tr").length;
+
+            if (cliente === "" || cliente === "0") {
+                mostrarError("Debe seleccionar un cliente.");
+                return;
+            }
+
+            if (filas === 0) {
+                mostrarError("Debe agregar al menos un producto.");
+                return;
+            }
+
+            // enviar si todo está bien
+            document.querySelector("form").submit();
+
+        });
 
     </script>
 

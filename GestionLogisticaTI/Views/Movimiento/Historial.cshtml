@@ -1,12 +1,43 @@
 ﻿@model List<GestionLogisticaTI.ViewModels.MovimientoHistorialViewModel>
 
-<h2 class="mb-1">
-    <i class="bi bi-clock-history"></i>
-    Historial de Movimientos
-</h2>
-<h6 class="mb-4 text-secondary">
-    Consulta y trazabilidad de operaciones de inventario
-</h6>
+@{
+    var total = Model.Count();
+    var ingresos = Model.Count(x => x.TipoMovimiento == "Ingreso");
+    var salidas = Model.Count(x => x.TipoMovimiento == "Salida");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="mb-1">
+            <i class="bi bi-clock-history"></i>
+            Historial de Movimientos
+        </h2>
+        <h6 class="text-secondary mb-0">
+            Consulta y trazabilidad de operaciones de inventario
+        </h6>
+    </div>
+
+    <div class="d-flex gap-3">
+
+        <div class="text-center">
+            <small class="text-muted">Total</small>
+            <div class="fw-bold">@total</div>
+        </div>
+
+        <div class="text-center">
+            <small class="text-muted">Ingresos</small>
+            <div class="fw-bold text-success">@ingresos</div>
+        </div>
+
+        <div class="text-center">
+            <small class="text-muted">Salidas</small>
+            <div class="fw-bold text-danger">@salidas</div>
+        </div>
+
+    </div>
+
+</div>
 
 <div class="card mb-4">
 
@@ -14,45 +45,37 @@
 
         <form method="get">
 
-            <div class="row">
+            <div class="row align-items-end">
 
                 <div class="col-md-3 mb-2">
-
+                    <label class="form-label">Tipo</label>
                     <select name="tipoMovimiento" class="form-control">
-
-                        <option value="">Todos los movimientos</option>
+                        <option value="">Todos</option>
                         <option value="Ingreso">Ingreso</option>
                         <option value="Salida">Salida</option>
                         <option value="Ajuste">Ajuste</option>
-
                     </select>
-
                 </div>
 
                 <div class="col-md-2 mb-2">
+                    <label class="form-label">Desde</label>
                     <input type="date" name="fechaInicio" class="form-control" />
                 </div>
 
                 <div class="col-md-2 mb-2">
+                    <label class="form-label">Hasta</label>
                     <input type="date" name="fechaFin" class="form-control" />
                 </div>
 
                 <div class="col-md-3 mb-2">
-                    <input type="text"
-                           name="producto"
-                           class="form-control"
-                           placeholder="Buscar producto" />
+                    <label class="form-label">Producto</label>
+                    <input type="text" name="producto" class="form-control" placeholder="Buscar..." />
                 </div>
 
                 <div class="col-md-2 mb-2">
-
                     <button class="btn btn-primary w-100">
-
-                        <i class="bi bi-search"></i>
-                        Buscar
-
+                        <i class="bi bi-search"></i> Buscar
                     </button>
-
                 </div>
 
             </div>
@@ -68,8 +91,7 @@
 
     <div class="card-body">
 
-        <table id="tablaMovimientos"
-               class="table table-striped table-hover align-middle">
+        <table id="tablaMovimientos" class="table table-striped table-hover align-middle table-sm">
 
             <thead class="table-dark">
 
@@ -91,10 +113,17 @@
 
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr class="@(item.Fecha >= DateTime.Now.AddDays(-1) ? "table-info" : "")">
 
-                        <td>
-                            @item.Fecha.ToString("dd/MM/yyyy HH:mm")
+                        <td data-order="@item.Fecha.ToString("yyyy-MM-dd HH:mm:ss")">
+
+                            @item.Fecha.ToString("dd/MM/yyyy")
+
+                            @if (item.Fecha >= DateTime.Now.AddHours(-2))
+                            {
+                                <span class="badge bg-danger ms-1">Reciente</span>
+                            }
+
                         </td>
 
                         <td>
@@ -179,22 +208,26 @@
 
     <script>
 
-$(document).ready(function(){
+        $(document).ready(function () {
 
-$('#tablaMovimientos').DataTable({
+            $('#tablaMovimientos').DataTable({
 
-pageLength: 10,
+                pageLength: 15,
+                searching: false,
+                lengthChange: false,
 
-searching:false,
-lengthChange:false,
+                order: [[0, "desc"]],
 
-language:{
-url:"//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
-}
+                deferRender: true, 
+                processing: true,  
 
-});
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
 
-});
+            });
+
+        });
 
     </script>
 

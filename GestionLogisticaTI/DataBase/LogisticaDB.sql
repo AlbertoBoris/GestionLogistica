@@ -515,18 +515,27 @@ BEGIN
         P.fechaDespacho,
         M.numeroDocumento AS NumeroGuia
     FROM Pedido P
+
     INNER JOIN Cliente C 
         ON P.idCliente = C.idCliente
-    LEFT JOIN Movimiento M
-        ON M.tipoMovimiento = 'Salida'
-        AND M.numeroDocumento IS NOT NULL
+
+    OUTER APPLY (
+        SELECT TOP 1 numeroDocumento
+        FROM Movimiento
+        WHERE tipoMovimiento = 'Salida'
+        AND numeroDocumento IS NOT NULL
+        ORDER BY fecha DESC
+    ) M
+
     WHERE 
         P.estado = 'Despachado'
         AND (@clienteId IS NULL OR P.idCliente = @clienteId)
         AND (@fechaDesde IS NULL OR P.fechaDespacho >= @fechaDesde)
         AND (@fechaHasta IS NULL OR P.fechaDespacho < DATEADD(DAY,1,@fechaHasta))
         AND (@numeroGuia IS NULL OR M.numeroDocumento LIKE '%' + @numeroGuia + '%')
+
     ORDER BY P.fechaDespacho DESC;
+
 END;
 
 GO

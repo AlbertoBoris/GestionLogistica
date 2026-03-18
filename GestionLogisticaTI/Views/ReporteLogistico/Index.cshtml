@@ -1,13 +1,56 @@
 ﻿@model GestionLogisticaTI.ViewModels.ReporteLogisticoViewModel
 
-<h2 class="mb-1">
-    <i class="bi bi-file-earmark-bar-graph"></i>
-    Generar Reporte Logístico
-</h2>
-<h6 class="mb-4 text-secondary">
-    Reportes y análisis de movimientos
-</h6>
+@{
+    var nombresColumnas = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+{
+        { "idMovimiento", "ID" },
+        { "fecha", "Fecha" },
+        { "tipoMovimiento", "Tipo" },
+        { "numeroDocumento", "Documento" },
+        { "motivo", "Motivo" },
+        { "producto", "Producto" },
+        { "cantidad", "Cantidad" },
+        { "totalProductos", "Productos" },
+        { "totalUnidades", "Unidades" },
+        { "productosCriticos", "Criticos" },
+        { "FechaPedido", "Fecha de Pedido" },
+        { "fechaDespacho", "Fecha de Despacho" },
+        { "NumeroGuia", "N° Guía" },
+        { "UsuarioDespacho", "Usuario" },
+        { "idPedido", "ID" },
+        { "idProducto", "ID" },
+        { "nombre", "Nombre" },
+        { "stockActual", "Stock Actual" },
+        { "stockMinimo", "Stock Minimo" },
+        { "ubicacion", "Ubicación" },
+        { "estado", "Estado" },
+        { "usuario", "Usuario" }
+    };
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
 
+    <div>
+        <h2 class="mb-1">
+            <i class="bi bi-file-earmark-bar-graph"></i>
+            Reportes Logísticos
+        </h2>
+        <h6 class="text-secondary mb-0">
+            Generación y análisis de información operativa
+        </h6>
+    </div>
+
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <strong>
+            <i class="bi bi-exclamation-triangle"></i>
+            Corrija los siguientes errores:
+        </strong>
+        @Html.ValidationSummary(false)
+    </div>
+}
 
 <div class="card mb-4">
 
@@ -23,9 +66,9 @@
                     <label class="form-label">Tipo de Reporte</label>
 
                     @Html.DropDownListFor(m => m.TipoReporte,
-                                        Model.TiposReporte,
-                                        "-- Seleccione Reporte --",
-                                        new { @class = "form-control" })
+                                                       Model.TiposReporte,
+                                                       "-- Seleccione Reporte --",
+                                                       new { @class = "form-control" })
 
                 </div>
 
@@ -35,7 +78,7 @@
 
                     <input type="date"
                            name="fechaInicio"
-                           value="@(Model.FechaInicio?.ToString("yyyy-MM-dd"))"
+                           value="@(Model.FechaInicio != null ? Model.FechaInicio.Value.ToString("yyyy-MM-dd") : "")"
                            class="form-control" />
 
                 </div>
@@ -46,19 +89,16 @@
 
                     <input type="date"
                            name="fechaFin"
-                           value="@(Model.FechaFin?.ToString("yyyy-MM-dd"))"
+                           value="@(Model.FechaFin != null ? Model.FechaFin.Value.ToString("yyyy-MM-dd") : "")"
                            class="form-control" />
 
                 </div>
 
                 <div class="col-md-2 d-flex align-items-end mb-2">
 
-                    <button type="submit"
-                            class="btn btn-primary w-100">
-
-                        <i class="bi bi-search"></i>
-                        Generar
-
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-bar-chart"></i>
+                        Generar Reporte
                     </button>
 
                 </div>
@@ -119,7 +159,9 @@ fechaFin = Model.FechaFin
 
                         @foreach (var col in ((IDictionary<string, object>)Model.Resultados[0]).Keys)
                         {
-                            <th>@col</th>
+                            <th>
+                                @(nombresColumnas.ContainsKey(col) ? nombresColumnas[col] : col)
+                            </th>
                         }
 
                     </tr>
@@ -132,9 +174,20 @@ fechaFin = Model.FechaFin
                     {
                         <tr>
 
-                            @foreach (var value in ((IDictionary<string, object>)row).Values)
+                            @foreach (var value in ((IDictionary<string, object>)row))
                             {
-                                <td>@value</td>
+                                <td>
+                                    @{
+                                        if (value.Value is DateTime)
+                                        {
+                                            @(((DateTime)value.Value).ToString("dd/MM/yyyy HH:mm"))
+                                        }
+                                        else
+                                        {
+                                            @value.Value
+                                        }
+                                    }
+                                </td>
                             }
 
                         </tr>
@@ -150,6 +203,7 @@ fechaFin = Model.FechaFin
 
 }
 
+
 @section scripts{
 
     <script>
@@ -159,20 +213,10 @@ fechaFin = Model.FechaFin
             var table = $('#tablaReporte').DataTable({
 
                 pageLength: 10,
-
-                searching: false,
+                searching: true,
                 lengthChange: false,
-                info: false,
+                info: true,
 
-                dom: 't',
-
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        text: '<i class="bi bi-file-earmark-excel"></i> Excel',
-                        className: 'btn btn-success'
-                    }
-                ],
 
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"

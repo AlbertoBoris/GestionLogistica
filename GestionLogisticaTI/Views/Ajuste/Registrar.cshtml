@@ -279,6 +279,10 @@ width:'100%'
         $("#btnEjecutarAjuste").click(function (e) {
             let esValido = true;
 
+            let doc = $("#txtNumeroDocumento").val().trim();
+
+            let regex = /^[a-zA-Z0-9]{1,16}$/;
+
             $(".text-danger").text("");
             $(".form-control").removeClass("is-invalid");
 
@@ -289,18 +293,29 @@ width:'100%'
             }
 
             $(".ajusteCantidad").each(function () {
-                const valor = parseFloat($(this).val());
+
+                const fila = $(this).closest("tr");
+                const ajuste = parseInt($(this).val()) || 0;
+                const stock = parseInt(fila.find(".stockActual").val()) || 0;
+
                 const mensajeError = $(this).siblings(".err-especifico");
 
-                if (isNaN(valor) || valor === 0) {
+                if (ajuste === 0) {
                     $(this).addClass("is-invalid");
-                    mensajeError.text("El ajuste no puede ser 0 o estar vacío.");
+                    mensajeError.text("El ajuste no puede ser 0.");
                     esValido = false;
                 }
+
+                if (stock + ajuste < 0) {
+                    $(this).addClass("is-invalid");
+                    mensajeError.text("No puede dejar stock negativo.");
+                    esValido = false;
+                }
+
             });
 
-            if ($("#txtNumeroDocumento").val().trim().length !== 8) {
-                $("#errNumeroDocumento").text("Ingrese exactamente 8 números.");
+            if (!regex.test(doc)) {
+                $("#errNumeroDocumento").text("Máximo 16 caracteres (letras y números).");
                 $("#txtNumeroDocumento").addClass("is-invalid");
                 esValido = false;
             }

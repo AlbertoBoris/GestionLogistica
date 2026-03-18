@@ -20,10 +20,11 @@ namespace GestionLogisticaTI.ViewModels
         public string Correo { get; set; }
         
         public string Estado { get; set; }
-        
-        public int IdRol { get; set; }
 
         [Required(ErrorMessage = "Debe seleccionar un rol")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un rol")]
+        public int IdRol { get; set; }
+
         public string NombreRol { get; set; }
 
         [MinLength(6, ErrorMessage = "La contraseña debe tener mínimo 6 caracteres")]
