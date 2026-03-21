@@ -2,23 +2,18 @@
     ViewBag.Title = "Menu Administrador";
 }
 
-<div class="sidebar-section">
-
-    <div class="sidebar-header">
-        <i class="bi bi-shield-lock"></i>
-        <span>Administrador</span>
-    </div>
-
-    <ul class="nav flex-column sidebar-menu">
-
-        <li class="nav-item">
-            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Usuario" ? "active" : "")"
-               href="@Url.Action("Index","Usuario")">
-                <i class="bi bi-people-fill"></i>
-                <span>Usuarios y Roles</span>
-            </a>
-        </li>
-
-    </ul>
-
+<div class="sidebar-title">
+    <i class="bi bi-shield-lock"></i>
+    Administrador
 </div>
+
+<ul class="nav flex-column">
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","Usuario")">
+            <i class="bi bi-people-fill"></i>
+            Administrar Usuarios y Roles
+        </a>
+    </li>
+
+</ul>

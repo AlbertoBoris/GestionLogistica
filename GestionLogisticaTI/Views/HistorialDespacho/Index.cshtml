@@ -41,6 +41,14 @@
 
             <div class="row align-items-end">
 
+                <div class="col-md-3 mb-2">
+                    <label class="form-label">N° Guía</label>
+                    <input type="text"
+                           name="numeroGuia"
+                           value="@ViewBag.NumeroGuia"
+                           class="form-control"
+                           placeholder="Buscar..." />
+                </div>
 
                 <div class="col-md-3 mb-2">
                     <label class="form-label">Desde</label>
@@ -87,6 +95,7 @@
                     <th>Cliente</th>
                     <th>Fecha Pedido</th>
                     <th>Fecha Despacho</th>
+                    <th>N° Guía</th>
                     <th width="120">Acciones</th>
                 </tr>
 
@@ -127,6 +136,16 @@
 
                         </td>
 
+                        <td>
+
+                            @if (!string.IsNullOrEmpty(item.NumeroGuia))
+                            {
+                                <span class="badge bg-info">
+                                    @item.NumeroGuia
+                                </span>
+                            }
+
+                        </td>
 
                         <td>
 

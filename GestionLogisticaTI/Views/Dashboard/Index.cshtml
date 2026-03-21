@@ -1,0 +1,297 @@
+﻿@model GestionLogisticaTI.ViewModels.DashboardViewModel
+
+@{
+    ViewBag.Title = "Dashboard Logístico";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+
+    .card-dashboard {
+        border: none;
+        border-radius: 12px;
+        padding: 20px;
+        color: white;
+        transition: 0.3s;
+    }
+
+        .card-dashboard:hover {
+            transform: translateY(-5px);
+        }
+
+    .kpi-title {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .kpi-value {
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .bg-blue {
+        background: #0d6efd;
+    }
+
+    .bg-green {
+        background: #198754;
+    }
+
+    .bg-red {
+        background: #dc3545;
+    }
+
+    .bg-yellow {
+        background: #ffc107;
+        color: black;
+    }
+
+    .chart-card {
+        border-radius: 12px;
+        padding: 20px;
+        background: white;
+        box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .table thead {
+        background: #343a40;
+        color: white;
+    }
+
+    .btn-powerbi {
+        background: linear-gradient(135deg, #0d6efd, #6f42c1);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+        .btn-powerbi:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+            color: white;
+        }
+</style>
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-speedometer"></i>
+                Dashboard Logístico
+            </h2>
+            <h6 class="text-secondary mb-0">
+                Visualización de indicadores clave
+            </h6>
+        </div>
+
+        <a href="/Dashboard/PowerBI"
+           class="btn btn-powerbi">
+            <i class="bi bi-bar-chart-line-fill me-2"></i>
+            Dashboard Avanzado
+        </a>
+
+    </div>
+
+    <!-- KPIs -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+            <div class="card-dashboard bg-blue shadow">
+                <div class="kpi-title">Total Productos</div>
+                <div class="kpi-value">@Model.KPIs.TotalProductos</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-dashboard bg-green shadow">
+                <div class="kpi-title">Total Stock</div>
+                <div class="kpi-value">@Model.KPIs.TotalStock</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-dashboard bg-red shadow">
+                <div class="kpi-title">Productos Críticos</div>
+                <div class="kpi-value">@Model.KPIs.ProductosCriticos</div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-dashboard bg-yellow shadow">
+                <div class="kpi-title">Pedidos Pendientes</div>
+                <div class="kpi-value">@Model.KPIs.PedidosPendientes</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GRÁFICOS -->
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h6 class="mb-3">Movimientos por Tipo</h6>
+                <canvas id="movTipo" style="max-height: 250px;"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h6 class="mb-3">Pedidos por Estado</h6>
+                <canvas id="pedidosEstado" style="max-height: 250px;"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h6 class="mb-3">Movimientos por Fecha</h6>
+                <canvas id="movFecha"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="chart-card">
+                <h6 class="mb-3">Despachos por Fecha</h6>
+                <canvas id="despachos"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+    <div class="chart-card mt-4">
+        <h6 class="mb-3">⚠ Productos Críticos</h6>
+
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Producto</th>
+                    <th>Stock</th>
+                    <th>Mínimo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.ProductosCriticos)
+                {
+                    <tr>
+                        <td>@p.Nombre</td>
+                        <td class="text-danger fw-bold">@p.StockActual</td>
+                        <td>@p.StockMinimo</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    // Colores profesionales
+    const colors = [
+        '#0d6efd',
+        '#198754',
+        '#ffc107',
+        '#dc3545',
+        '#6f42c1'
+    ];
+
+    // Movimientos por tipo
+    let tipoLabels = [];
+    let tipoData = [];
+
+    @foreach (var item in Model.MovimientosPorTipo)
+    {
+        @:tipoLabels.push("@item.Tipo");
+        @:tipoData.push(@item.Total);
+    }
+
+    new Chart(document.getElementById("movTipo"), {
+        type: 'doughnut',
+        data: {
+            labels: tipoLabels,
+            datasets: [{
+                data: tipoData,
+                backgroundColor: colors
+            }]
+        }
+    });
+
+    // Pedidos por estado
+    let estadoLabels = [];
+    let estadoData = [];
+
+    @foreach (var item in Model.PedidosPorEstado)
+    {
+        @:estadoLabels.push("@item.Estado");
+        @:estadoData.push(@item.Total);
+    }
+
+    new Chart(document.getElementById("pedidosEstado"), {
+        type: 'bar',
+        data: {
+            labels: estadoLabels,
+            datasets: [{
+                label: "Pedidos",
+                data: estadoData,
+                backgroundColor: '#0d6efd'
+            }]
+        }
+    });
+
+    // Movimientos por fecha
+    let fechaLabels = [];
+    let fechaData = [];
+
+    @foreach (var item in Model.MovimientosPorFecha)
+    {
+        @:fechaLabels.push("@item.Fecha.ToString("yyyy-MM-dd")");
+        @:fechaData.push(@item.Total);
+    }
+
+    new Chart(document.getElementById("movFecha"), {
+        type: 'line',
+        data: {
+            labels: fechaLabels,
+            datasets: [{
+                label: "Movimientos",
+                data: fechaData,
+                borderColor: '#198754',
+                tension: 0.3
+            }]
+        }
+    });
+
+    // Despachos
+    let despLabels = [];
+    let despData = [];
+
+    @foreach (var item in Model.DespachosPorFecha)
+    {
+        @:despLabels.push("@item.Fecha.ToString("yyyy-MM-dd")");
+        @:despData.push(@item.Total);
+    }
+
+    new Chart(document.getElementById("despachos"), {
+        type: 'line',
+        data: {
+            labels: despLabels,
+            datasets: [{
+                label: "Despachos",
+                data: despData,
+                borderColor: '#dc3545'
+            }]
+        }
+    });
+
+</script>

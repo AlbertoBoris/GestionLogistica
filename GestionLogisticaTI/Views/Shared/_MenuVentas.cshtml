@@ -2,39 +2,32 @@
     ViewBag.Title = "Menu Ventas";
 }
 
-<div class="sidebar-section">
-
-    <div class="sidebar-header">
-        <i class="bi bi-cart"></i>
-        <span>Área Ventas</span>
-    </div>
-
-    <ul class="nav flex-column sidebar-menu">
-
-        <li class="nav-item">
-            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Pedido" ? "active" : "")"
-               href="@Url.Action("Index","Pedido")">
-                <i class="bi bi-bag"></i>
-                <span>Pedidos</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Cliente" ? "active" : "")"
-               href="@Url.Action("Index","Cliente")">
-                <i class="bi bi-people"></i>
-                <span>Clientes</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Stock" ? "active" : "")"
-               href="@Url.Action("Index","Stock")">
-                <i class="bi bi-box-seam"></i>
-                <span>Stock</span>
-            </a>
-        </li>
-
-    </ul>
-
+<div class="sidebar-title">
+    <i class="bi bi-cart"></i>
+    Área de Ventas
 </div>
+
+<ul class="nav flex-column">
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","Pedido")">
+            <i class="bi bi-bag"></i>
+            Gestionar Pedidos
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","Cliente")">
+            <i class="bi bi-people"></i>
+            Gestionar Clientes
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index","Stock")">
+            <i class="bi bi-box-seam"></i>
+            Consultar Stock
+        </a>
+    </li>
+
+</ul>

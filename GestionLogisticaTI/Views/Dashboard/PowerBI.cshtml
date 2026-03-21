@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Dashboard Avanzado";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+
+    .powerbi-container {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .header-dashboard {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .btn-back {
+        background: #212529;
+        color: white;
+        border-radius: 8px;
+        padding: 6px 14px;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            background: #000;
+            color: white;
+        }
+
+    iframe {
+        border-radius: 10px;
+    }
+
+    .powerbi-container {
+        background: linear-gradient(145deg, #ffffff, #f1f3f5);
+    }
+</style>
+
+<div class="container-fluid mt-4">
+
+    <!-- Header elegante -->
+    <div class="header-dashboard">
+        <h3 class="fw-bold">📊 Dashboard Avanzado (Power BI)</h3>
+
+        <a href="/Dashboard/Index" class="btn-back">
+            ← Volver al Dashboard
+        </a>
+    </div>
+
+    <!-- Contenedor PRO -->
+    <div class="powerbi-container">
+
+        <iframe width="100%" height="650"
+                src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMTBmYmQtNjU1Yy00YWViLThmODAtMGJkN2MxYjQ3MGEzIiwidCI6Ijc1MDRlMzE4LThlMWUtNGQ1NS1iZmZkLTg3NWI0ZGVlODI2MCIsImMiOjR9&pageName=00c94e5153c7ec2a5670"
+                frameborder="0"
+                allowFullScreen="true">
+        </iframe>
+
+    </div>
+
+</div>
