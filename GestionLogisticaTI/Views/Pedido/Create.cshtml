@@ -13,7 +13,7 @@
 </h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "formPedido" }))
 {
 
     <div class="card mb-4">
@@ -130,7 +130,7 @@ new { returnUrl = Url.Action("Create","Pedido") })"
 
     <div class="mt-3">
 
-        <button type="button" id="btnGuardar" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary">
             <i class="bi bi-save"></i>
             Guardar Pedido
         </button>
@@ -176,16 +176,19 @@ new { returnUrl = Url.Action("Create","Pedido") })"
             var productoTexto = productoSelect.options[productoSelect.selectedIndex].text;
             var cantidad = cantidadInput.value;
 
+            // Validar producto
             if (productoValor === "") {
                 mostrarError("Seleccione un producto.");
                 return;
             }
 
+            // Validar cantidad
             if (cantidad === "" || parseInt(cantidad) <= 0) {
                 mostrarError("Ingrese una cantidad válida.");
                 return;
             }
 
+            // Evitar duplicados
             let existe = false;
 
             document.querySelectorAll("#tablaDetalle tbody input[name$='.IdProducto']")
@@ -232,8 +235,9 @@ new { returnUrl = Url.Action("Create","Pedido") })"
             btn.closest("tr").remove();
         }
 
-        // VALIDACIÓN FINAL
-        document.getElementById("btnGuardar").addEventListener("click", function () {
+
+        // 🔥 VALIDACIÓN + ENVÍO CORRECTO
+        document.getElementById("formPedido").addEventListener("submit", function (e) {
 
             limpiarError();
 
@@ -242,16 +246,28 @@ new { returnUrl = Url.Action("Create","Pedido") })"
 
             if (cliente === "" || cliente === "0") {
                 mostrarError("Debe seleccionar un cliente.");
-                return;
+                e.preventDefault();
+                return false;
             }
 
             if (filas === 0) {
                 mostrarError("Debe agregar al menos un producto.");
-                return;
+                e.preventDefault();
+                return false;
             }
 
-            // enviar si todo está bien
-            document.querySelector("form").submit();
+            // 🔥 REINDEXAR (CRÍTICO para MVC)
+            document.querySelectorAll("#tablaDetalle tbody tr").forEach(function (row, i) {
+
+                let idProd = row.querySelector("input[name*='IdProducto']");
+                let cantidad = row.querySelector("input[name*='Cantidad']");
+
+                if (idProd) idProd.name = `Detalles[${i}].IdProducto`;
+                if (cantidad) cantidad.name = `Detalles[${i}].Cantidad`;
+
+            });
+
+            console.log("FORM ENVIADO ✅");
 
         });
 

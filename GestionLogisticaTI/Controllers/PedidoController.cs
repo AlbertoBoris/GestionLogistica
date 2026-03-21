@@ -183,6 +183,46 @@ namespace GestionLogisticaTI.Controllers
             TempData["Mensaje"] = "Pedido registrado correctamente";
             return RedirectToAction("Index");
         }
+        public ActionResult Edit(int id)
+        {
+            PedidoCreateViewModel model = new PedidoCreateViewModel();
+            model.Detalles = new List<PedidoDetalleViewModel>();
+
+            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            {
+                SqlCommand cmd = new SqlCommand("sp_Pedido_ObtenerDetalle", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@idPedido", id);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                // PRIMER RESULTSET → Cabecera
+                if (reader.Read())
+                {
+                    model.IdPedido = Convert.ToInt32(reader["idPedido"]);
+                    model.IdCliente = Convert.ToInt32(reader["idCliente"]);
+                }
+
+                // SEGUNDO RESULTSET → Detalle
+                reader.NextResult();
+
+                while (reader.Read())
+                {
+                    model.Detalles.Add(new PedidoDetalleViewModel
+                    {
+                        IdProducto = Convert.ToInt32(reader["idProducto"]),
+                        Producto = reader["Producto"].ToString(),
+                        Cantidad = Convert.ToInt32(reader["cantidad"])
+                    });
+                }
+            }
+
+            model.Clientes = ObtenerClientes();
+            model.Productos = ObtenerProductos();
+
+            return View(model);
+        }
 
         /* Editar Pedido */
         [HttpPost]
