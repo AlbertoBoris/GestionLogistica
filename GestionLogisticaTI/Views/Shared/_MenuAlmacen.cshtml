@@ -2,39 +2,47 @@
     ViewBag.Title = "Menu Almacen";
 }
 
-<div class="sidebar-title">
-    <i class="bi bi-building"></i>
-    Área de Almacén
+<div class="sidebar-section">
+
+    <div class="sidebar-header almacen-header">
+        <i class="bi bi-building"></i>
+        <span>Área Almacén</span>
+    </div>
+
+    <ul class="nav flex-column sidebar-menu">
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Despacho" ? "active" : "")"
+               href="@Url.Action("Index","Despacho")">
+                <i class="bi bi-truck"></i>
+                <span>Despachos</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="HistorialDespacho" ? "active" : "")"
+               href="@Url.Action("Index","HistorialDespacho")">
+                <i class="bi bi-clock-history"></i>
+                <span>Historial</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Auditoria" ? "active" : "")"
+               href="@Url.Action("Index","Auditoria")">
+                <i class="bi bi-search"></i>
+                <span>Auditoría</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Stock" ? "active" : "")"
+               href="@Url.Action("Index","Stock")">
+                <i class="bi bi-box-seam"></i>
+                <span>Stock</span>
+            </a>
+        </li>
+
+    </ul>
+
 </div>
-
-<ul class="nav flex-column">
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Index","Despacho")">
-            <i class="bi bi-truck"></i>
-            Despachos Pendientes
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Index","HistorialDespacho")">
-            <i class="bi bi-clock-history"></i>
-            Historial de Despachos
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Index","Auditoria")">
-            <i class="bi bi-search"></i>
-            Auditoría de Inventario
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Index","Stock")">
-            <i class="bi bi-box-seam"></i>
-            Consultar Stock
-        </a>
-    </li>
-
-</ul>

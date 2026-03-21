@@ -1,36 +1,47 @@
-﻿
-@model GestionLogisticaTI.ViewModels.LoginViewModel
-@Html.ValidationSummary(true)
-
+﻿@model GestionLogisticaTI.ViewModels.LoginViewModel
 @{
     Layout = null;
 }
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Login - Gestión Logística TI</title>
 
     <link href="~/Content/bootstrap.css" rel="stylesheet" />
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
 
         body {
-            background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+            background: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d') no-repeat center center fixed;
+            background-size: cover;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
         }
+
+            /* 🔥 capa oscura encima */
+            body::before {
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.6);
+                z-index: -1;
+            }
 
         .login-card {
             width: 100%;
             max-width: 420px;
-            border: none;
             border-radius: 12px;
+            backdrop-filter: blur(5px);
+            background: rgba(255,255,255,0.1);
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s ease;
         }
 
         .login-header {
@@ -57,6 +68,15 @@
             position: relative;
         }
 
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+        }
+
         .btn-login {
             border-radius: 8px;
             padding: 10px;
@@ -66,9 +86,15 @@
         .login-footer {
             text-align: center;
             font-size: 13px;
-            color: #6c757d;
+            color: white;
             margin-top: 10px;
         }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
     </style>
 
 </head>
@@ -78,65 +104,87 @@
     <div class="card login-card">
 
         <div class="login-header text-center">
-            <h4 class="mb-0">Sistema de Logística TI</h4>
+            <h4 class="mb-0">Sistema Logístico</h4>
             <small>Iniciar sesión</small>
         </div>
 
         <div class="card-body p-4">
 
-            @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { id = "formLogin" }))
             {
 
-                @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+                if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger text-center">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Credenciales incorrectas
+                    </div>
+                }
 
                 <div class="mb-3 input-group-custom">
 
                     <i class="bi bi-envelope input-icon"></i>
 
                     @Html.TextBoxFor(m => m.Correo,
-                    new
-                         {
-                        @class = "form-control",
-                        placeholder = "Correo electrónico"
-                    })
-
-                    @Html.ValidationMessageFor(m => m.Correo, "",
-                    new { @class = "text-danger" })
+                    new { @class = "form-control", placeholder = "Correo electrónico" })
 
                 </div>
-
 
                 <div class="mb-3 input-group-custom">
 
                     <i class="bi bi-lock input-icon"></i>
 
                     @Html.PasswordFor(m => m.Contrasena,
-                    new
-                         {
-                        @class = "form-control",
-                        placeholder = "Contraseña"
-                    })
+                    new { @class = "form-control", placeholder = "Contraseña", id = "txtPassword" })
 
-                    @Html.ValidationMessageFor(m => m.Contrasena, "",
-                    new { @class = "text-danger" })
+                    <i class="bi bi-eye toggle-password" onclick="togglePassword()"></i>
 
                 </div>
 
-
-                <button type="submit" class="btn btn-primary btn-login w-100">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Ingresar
+                <button type="submit" id="btnLogin" class="btn btn-primary btn-login w-100">
+                    <span id="btnText">
+                        <i class="bi bi-box-arrow-in-right"></i> Ingresar
+                    </span>
+                    <span id="btnLoader" style="display:none;">
+                        <span class="spinner-border spinner-border-sm"></span> Ingresando...
+                    </span>
                 </button>
 
             }
 
             <div class="login-footer">
-                Sistema de Gestión Logística TI
+                Gestión Logística TI ©
             </div>
 
         </div>
 
     </div>
+
+    <script>
+
+function togglePassword(){
+    let input = document.getElementById("txtPassword");
+    input.type = input.type === "password" ? "text" : "password";
+}
+
+// 🔥 UX LOGIN
+document.getElementById("formLogin").addEventListener("submit", function (e) {
+
+    let correo = document.querySelector("[name='Correo']").value;
+    let pass = document.querySelector("[name='Contrasena']").value;
+
+    if (correo === "" || pass === "") {
+        e.preventDefault();
+        return;
+    }
+
+    // cambiar botón a loading
+    document.getElementById("btnText").style.display = "none";
+    document.getElementById("btnLoader").style.display = "inline";
+
+});
+
+    </script>
 
 </body>
 </html>
