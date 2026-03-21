@@ -118,6 +118,7 @@
     <Compile Include="Controllers\AutorizarPedidoController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ClienteController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DespachoController.cs" />
     <Compile Include="Controllers\HistorialDespachoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="ViewModels\AjusteInventarioViewModel.cs" />
     <Compile Include="ViewModels\AuditoriaViewModel.cs" />
     <Compile Include="ViewModels\ClienteViewModel.cs" />
+    <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\DespachoDetalleViewModel.cs" />
     <Compile Include="ViewModels\HistorialDespachoViewModel.cs" />
     <Compile Include="ViewModels\IngresoDetalleViewModel.cs" />
@@ -247,6 +249,8 @@
     <Content Include="Views\Ajuste\Registrar.cshtml" />
     <Content Include="Views\AutorizarPedido\Index.cshtml" />
     <Content Include="Views\AutorizarPedido\Detalle.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Dashboard\PowerBI.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

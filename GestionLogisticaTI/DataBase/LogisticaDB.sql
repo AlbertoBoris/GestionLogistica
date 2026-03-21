@@ -1828,3 +1828,113 @@ USE [master]
 GO
 ALTER DATABASE [GestionLogisticaTI] SET  READ_WRITE 
 GO
+
+
+/************* - Dashboard - *************/
+CREATE OR ALTER PROCEDURE sp_Dashboard_KPIs
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        (SELECT COUNT(*) FROM Producto WHERE estado = 'Activo') AS TotalProductos,
+        
+        (SELECT SUM(stockActual) FROM Producto WHERE estado = 'Activo') AS TotalStock,
+        
+        (SELECT COUNT(*) 
+         FROM Producto 
+         WHERE stockActual <= stockMinimo 
+         AND estado = 'Activo') AS ProductosCriticos,
+        
+        (SELECT COUNT(*) FROM Pedido WHERE estado = 'Pendiente') AS PedidosPendientes,
+        
+        (SELECT COUNT(*) FROM Pedido WHERE estado = 'Despachado') AS PedidosDespachados
+END
+
+GO
+CREATE OR ALTER PROCEDURE sp_Dashboard_MovimientosPorTipo
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        tipoMovimiento,
+        COUNT(*) AS Total
+    FROM Movimiento
+    GROUP BY tipoMovimiento
+END
+
+GO
+CREATE OR ALTER PROCEDURE sp_Dashboard_MovimientosPorFecha
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        CAST(fecha AS DATE) AS Fecha,
+        COUNT(*) AS TotalMovimientos
+    FROM Movimiento
+    GROUP BY CAST(fecha AS DATE)
+    ORDER BY Fecha
+END
+
+GO
+CREATE OR ALTER PROCEDURE sp_Dashboard_ProductosCriticos
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        nombre,
+        stockActual,
+        stockMinimo
+    FROM Producto
+    WHERE stockActual <= stockMinimo
+    AND estado = 'Activo'
+    ORDER BY stockActual ASC
+END
+
+GO
+CREATE OR ALTER PROCEDURE sp_Dashboard_TopProductosMovidos
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP 5
+        P.nombre,
+        SUM(MD.cantidad) AS TotalMovido
+    FROM MovimientoDetalle MD
+    INNER JOIN Producto P ON MD.idProducto = P.idProducto
+    GROUP BY P.nombre
+    ORDER BY TotalMovido DESC
+END
+
+GO
+CREATE OR ALTER PROCEDURE sp_Dashboard_PedidosPorEstado
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        estado,
+        COUNT(*) AS Total
+    FROM Pedido
+    GROUP BY estado
+END
+
+GO
+CREATE OR ALTER PROCEDURE sp_Dashboard_DespachosPorFecha
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        CAST(fechaDespacho AS DATE) AS Fecha,
+        COUNT(*) AS TotalDespachos
+    FROM Pedido
+    WHERE estado = 'Despachado'
+    GROUP BY CAST(fechaDespacho AS DATE)
+    ORDER BY Fecha
+END
+
+GO

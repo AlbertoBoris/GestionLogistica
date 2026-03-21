@@ -74,7 +74,7 @@ namespace GestionLogisticaTI.Controllers
                     return RedirectToAction("Index", "Despacho");
 
                 case "JefeArea":
-                    return RedirectToAction("Index", "ReporteLogistico");
+                    return RedirectToAction("Index", "Dashboard");
 
                 default:
                     return RedirectToAction("Login");

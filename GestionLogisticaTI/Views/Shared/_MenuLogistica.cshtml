@@ -2,60 +2,71 @@
     ViewBag.Title = "Menu Logistica";
 }
 
-<div class="sidebar-title">
-    <i class="bi bi-box-seam"></i>
-    Área de Logística
+<div class="sidebar-section">
+
+    <div class="sidebar-header">
+        <i class="bi bi-box-seam"></i>
+        <span>Área Logística</span>
+    </div>
+
+    <ul class="nav flex-column sidebar-menu">
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Producto" ? "active" : "")"
+               href="@Url.Action("Index","Producto")">
+                <i class="bi bi-box"></i>
+                <span>Productos</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Ingreso" ? "active" : "")"
+               href="@Url.Action("RegistrarIngreso","Ingreso")">
+                <i class="bi bi-arrow-down-circle"></i>
+                <span>Ingresos</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Ajuste" ? "active" : "")"
+               href="@Url.Action("Registrar","Ajuste")">
+                <i class="bi bi-tools"></i>
+                <span>Ajustes</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="AutorizarPedido" ? "active" : "")"
+               href="@Url.Action("Index","AutorizarPedido")">
+                <i class="bi bi-check2-square"></i>
+                <span>Autorizar Pedidos</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Movimiento" ? "active" : "")"
+               href="@Url.Action("Historial","Movimiento")">
+                <i class="bi bi-clock-history"></i>
+                <span>Movimientos</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="HistorialDespacho" ? "active" : "")"
+               href="@Url.Action("Index","HistorialDespacho")">
+                <i class="bi bi-truck"></i>
+                <span>Despachos</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Stock" ? "active" : "")"
+               href="@Url.Action("Index","Stock")">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>Stock</span>
+            </a>
+        </li>
+
+    </ul>
+
 </div>
-
-<ul class="nav flex-column">
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Index","Producto")">
-            <i class="bi bi-box"></i>
-            Gestionar Productos
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("RegistrarIngreso","Ingreso")">
-            <i class="bi bi-arrow-down-circle"></i>
-            Registrar Ingreso
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Registrar","Ajuste")">
-            <i class="bi bi-tools"></i>
-            Ajuste de Inventario
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Index","AutorizarPedido")">
-            <i class="bi bi-check2-square"></i>
-            Autorizar Pedidos
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Historial","Movimiento")">
-            <i class="bi bi-clock-history"></i>
-            Historial de Movimientos
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Index","HistorialDespacho")">
-            <i class="bi bi-truck"></i>
-            Historial de Despachos
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" href="@Url.Action("Index","Stock")">
-            <i class="bi bi-bar-chart-line"></i>
-            Consultar Stock
-        </a>
-    </li>
-
-</ul>

@@ -23,83 +23,181 @@
     <style>
 
         body {
-            background-color: #f4f6f9;
+            background: linear-gradient(135deg, #eef2f7, #f8fafc);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* NAVBAR */
-
         .navbar-custom {
-            background-color: #1f2937;
+            background: linear-gradient(90deg, #0f172a, #1e293b);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .navbar-brand {
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
-
-        /* SIDEBAR */
 
         .sidebar {
-            background-color: #ffffff;
-            border-right: 1px solid #e5e7eb;
+            background: linear-gradient(180deg, #111827, #1f2937);
             min-height: 100vh;
+            padding-top: 15px;
         }
 
-        .sidebar-title {
-            font-size: 20px;
+            .sidebar .nav-link {
+                color: #9ca3af;
+                padding: 10px 14px;
+                border-radius: 8px;
+                margin-bottom: 6px;
+                transition: all 0.2s ease-in-out;
+            }
+
+                .sidebar .nav-link:hover {
+                    background: rgba(255,255,255,0.08);
+                    color: #ffffff;
+                    transform: translateX(5px);
+                }
+
+                .sidebar .nav-link.active {
+                    background: #3b82f6;
+                    color: white;
+                }
+        /* SECCIÓN SIDEBAR */
+        .sidebar-section {
+            padding: 10px;
+        }
+
+        /* HEADER */
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #e5e7eb;
             font-weight: 600;
-            margin-bottom: 25px;
-            color: #111827;
+            font-size: 16px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .sidebar .nav-link {
-            color: #374151;
+        /* MENU */
+        .sidebar-menu .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #9ca3af;
             padding: 10px 12px;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            transition: all 0.2s;
-        }
-
-            .sidebar .nav-link:hover {
-                background-color: #e5e7eb;
-                color: #111827;
-            }
-
-            .sidebar .nav-link i {
-                margin-right: 8px;
-            }
-
-        /* CONTENIDO */
-
-        .content-wrapper {
-            padding: 25px;
-        }
-
-        .content-card {
-            background: white;
-            padding: 25px;
             border-radius: 8px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            margin-bottom: 6px;
+            font-size: 14px;
+            transition: all 0.2s ease;
         }
 
+            /* ICONOS */
+            .sidebar-menu .nav-link i {
+                font-size: 16px;
+                min-width: 20px;
+            }
+
+            /* HOVER */
+            .sidebar-menu .nav-link:hover {
+                background: rgba(255,255,255,0.08);
+                color: #ffffff;
+                transform: translateX(5px);
+            }
+
+            /* ACTIVO */
+            .sidebar-menu .nav-link.active {
+                background: linear-gradient(90deg, #3b82f6, #2563eb);
+                color: #ffffff;
+                box-shadow: 0 4px 10px rgba(59,130,246,0.4);
+            }
+        /* CONTENIDO */
+        .content-wrapper {
+            padding: 30px;
+        }
+
+        /* CARD PRO */
+        .content-card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+            .content-card:hover {
+                transform: translateY(-2px);
+            }
+
+        /* BOTONES */
+        .btn {
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+            .btn:hover {
+                transform: translateY(-1px);
+            }
+
+        /* TABLAS */
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+            .table thead {
+                background: linear-gradient(90deg, #1e293b, #334155);
+                color: white;
+            }
+
+        /* LOADER MEJORADO */
         #loaderOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.9);
             display: none;
+            position: fixed;
             z-index: 9999;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
             justify-content: center;
             align-items: center;
         }
 
-        .loader-content {
+        .loader-box {
             text-align: center;
-            font-size: 18px;
-            color: #333;
+            color: white;
         }
+
+            .loader-box .spinner-border {
+                width: 3rem;
+                height: 3rem;
+            }
+
+        .loader-text {
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        * {
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .content-card {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
     </style>
 
 </head>
@@ -134,8 +232,8 @@
 
         <div class="container-fluid">
 
-            <span class="navbar-brand">
-                <i class="bi bi-hdd-network"></i>
+            <span class="navbar-brand d-flex align-items-center gap-2">
+                <i class="bi bi-box-seam"></i>
                 Gestión Logística TI
             </span>
 
