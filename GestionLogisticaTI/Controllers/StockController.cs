@@ -49,5 +49,36 @@ namespace GestionLogisticaTI.Controllers
 
             return View(lista);
         }
+
+        public ActionResult Detalle(int id)
+        {
+            ProductoViewModel model = new ProductoViewModel();
+
+            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            {
+                SqlCommand cmd = new SqlCommand("sp_Producto_ObtenerDetalle", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@idProducto", id);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    model.IdProducto = Convert.ToInt32(reader["idProducto"]);
+                    model.Nombre = reader["nombre"].ToString();
+                    model.Descripcion = reader["descripcion"] != DBNull.Value
+                                        ? reader["descripcion"].ToString()
+                                        : "";
+                    model.StockActual = Convert.ToInt32(reader["stockActual"]);
+                    model.StockMinimo = Convert.ToInt32(reader["stockMinimo"]);
+                    model.Ubicacion = reader["ubicacion"].ToString();
+                    model.Estado = reader["estado"].ToString();
+                }
+            }
+
+            return View(model);
+        }
     }
 }

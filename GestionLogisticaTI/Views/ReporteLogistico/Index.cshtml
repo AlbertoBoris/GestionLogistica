@@ -157,7 +157,8 @@ fechaFin = Model.FechaFin
 
                     <tr>
 
-                        @foreach (var col in ((IDictionary<string, object>)Model.Resultados[0]).Keys)
+                        @foreach (var col in ((IDictionary<string, object>)Model.Resultados[0]).Keys
+                            .Where(c => !c.Equals("NumeroGuia", StringComparison.OrdinalIgnoreCase)))
                         {
                             <th>
                                 @(nombresColumnas.ContainsKey(col) ? nombresColumnas[col] : col)
@@ -174,7 +175,8 @@ fechaFin = Model.FechaFin
                     {
                         <tr>
 
-                            @foreach (var value in ((IDictionary<string, object>)row))
+                            @foreach (var value in ((IDictionary<string, object>)row)
+                                .Where(v => !v.Key.Equals("NumeroGuia", StringComparison.OrdinalIgnoreCase)))
                             {
                                 <td>
                                     @{

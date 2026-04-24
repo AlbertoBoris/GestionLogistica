@@ -14,6 +14,7 @@ namespace GestionLogisticaTI.ViewModels
         [StringLength(100, ErrorMessage = "Máximo 100 caracteres")]
         public string Nombre { get; set; }
 
+        [Required(ErrorMessage = "Debe ingresar una descripción")]
         [StringLength(200)]
         public string Descripcion { get; set; }
 

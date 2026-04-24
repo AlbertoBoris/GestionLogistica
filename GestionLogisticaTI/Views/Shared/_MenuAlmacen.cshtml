@@ -15,7 +15,7 @@
             <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Despacho" ? "active" : "")"
                href="@Url.Action("Index","Despacho")">
                 <i class="bi bi-truck"></i>
-                <span>Despachos</span>
+                <span>Confirmar Despachos</span>
             </a>
         </li>
 
@@ -23,7 +23,7 @@
             <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="HistorialDespacho" ? "active" : "")"
                href="@Url.Action("Index","HistorialDespacho")">
                 <i class="bi bi-clock-history"></i>
-                <span>Historial</span>
+                <span>Historial de Despachos</span>
             </a>
         </li>
 
@@ -31,7 +31,7 @@
             <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Auditoria" ? "active" : "")"
                href="@Url.Action("Index","Auditoria")">
                 <i class="bi bi-search"></i>
-                <span>Auditoría</span>
+                <span>Auditoría de Inventario</span>
             </a>
         </li>
 
@@ -39,7 +39,7 @@
             <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Stock" ? "active" : "")"
                href="@Url.Action("Index","Stock")">
                 <i class="bi bi-box-seam"></i>
-                <span>Stock</span>
+                <span>Consultar Stock</span>
             </a>
         </li>
 

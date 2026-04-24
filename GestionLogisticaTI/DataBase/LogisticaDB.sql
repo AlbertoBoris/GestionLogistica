@@ -1478,6 +1478,28 @@ BEGIN
 END
 
 GO
+/****** Object:  StoredProcedure [dbo].[sp_Producto_ObtenerDetalle]    Script Date: 5/03/2026 23:38:43 ******/
+CREATE OR ALTER PROCEDURE sp_Producto_ObtenerDetalle
+    @idProducto INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        idProducto,
+        nombre,
+        descripcion,
+        stockActual,
+        stockMinimo,
+        ubicacion,
+        estado
+    FROM Producto
+    WHERE idProducto = @idProducto
+      AND estado = 'Activo';
+END
+
+GO
+
 /****** Object:  StoredProcedure [dbo].[sp_Reporte_Ajustes]    Script Date: 5/03/2026 23:38:43 ******/
 SET ANSI_NULLS ON
 GO
@@ -1517,7 +1539,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE OR ALTER PROCEDURE sp_Reporte_DespachosPorFecha
+ALTER PROCEDURE sp_Reporte_DespachosPorFecha
     @fechaInicio DATETIME = NULL,
     @fechaFin DATETIME = NULL
 AS
@@ -1529,19 +1551,28 @@ BEGIN
         P.fecha AS FechaPedido,
         P.fechaDespacho,
         C.nombre AS Cliente,
-        M.numeroDocumento AS NumeroGuia,
-        U.nombre AS UsuarioDespacho
+        M.NumeroGuia,
+        M.UsuarioDespacho
     FROM Pedido P
     INNER JOIN Cliente C 
         ON P.idCliente = C.idCliente
-    LEFT JOIN Movimiento M
-        ON M.tipoMovimiento = 'Salida'
-    LEFT JOIN Usuario U
-        ON M.idUsuario = U.idUsuario
+
+    OUTER APPLY (
+        SELECT TOP 1 
+            M.numeroDocumento AS NumeroGuia,
+            U.nombre AS UsuarioDespacho
+        FROM Movimiento M
+        LEFT JOIN Usuario U 
+            ON M.idUsuario = U.idUsuario
+        WHERE M.tipoMovimiento = 'Salida'
+        ORDER BY M.fecha DESC
+    ) M
+
     WHERE 
         P.estado = 'Despachado'
         AND (@fechaInicio IS NULL OR P.fechaDespacho >= @fechaInicio)
         AND (@fechaFin IS NULL OR P.fechaDespacho < DATEADD(DAY,1,@fechaFin))
+
     ORDER BY P.fechaDespacho DESC;
 END;
 GO

@@ -15,7 +15,7 @@
             <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Pedido" ? "active" : "")"
                href="@Url.Action("Index","Pedido")">
                 <i class="bi bi-bag"></i>
-                <span>Pedidos</span>
+                <span>Gestionar Pedidos</span>
             </a>
         </li>
 
@@ -23,7 +23,7 @@
             <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Cliente" ? "active" : "")"
                href="@Url.Action("Index","Cliente")">
                 <i class="bi bi-people"></i>
-                <span>Clientes</span>
+                <span>Gestionar Clientes</span>
             </a>
         </li>
 
@@ -31,7 +31,7 @@
             <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString()=="Stock" ? "active" : "")"
                href="@Url.Action("Index","Stock")">
                 <i class="bi bi-box-seam"></i>
-                <span>Stock</span>
+                <span>Consultar Stock</span>
             </a>
         </li>
 

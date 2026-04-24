@@ -105,6 +105,7 @@ else
                     <th>Stock Mínimo</th>
                     <th>Ubicación</th>
                     <th>Estado</th>
+                    <th>Detalle</th>
                 </tr>
 
             </thead>
@@ -177,6 +178,17 @@ else
 
                         </td>
 
+                        <td>
+
+                            <a href="@Url.Action("Detalle", new { id = item.IdProducto })"
+                               class="btn btn-primary btn-sm">
+
+                                <i class="bi bi-eye"></i>
+
+                            </a>
+
+                        </td>
+
                     </tr>
                 }
 
@@ -201,10 +213,10 @@ else
                 lengthChange: false,
                 info: false,
 
-                order: [[0, "desc"]], // 👈 columna oculta (críticos primero)
+                order: [[0, "desc"]], // críticos primero
 
                 columnDefs: [
-                    { targets: 0, visible: false } // 👈 ocultar columna
+                    { targets: 0, visible: false } //ocultar columna
                 ],
 
                 language: {
