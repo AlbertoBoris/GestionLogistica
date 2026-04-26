@@ -7,7 +7,26 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>@ViewBag.Title - Gestión Logística TI</title>
+
+    <title>@ViewBag.Title - CiberLogistica</title>
+
+    <!-- FAVICON DINÁMICO -->
+    <script>
+        const faviconSvg = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                        <rect width="100" height="100" rx="18" fill="#0d6efd"/>
+                        <path d="M25 35h50v40H25z" fill="white"/>
+                        <path d="M25 35l25-15 25 15" fill="#dbeafe"/>
+                        <path d="M50 20v55" stroke="#0d6efd" stroke-width="6"/>
+                    </svg>`;
+
+        const favicon = document.createElement("link");
+        favicon.rel = "icon";
+        favicon.type = "image/svg+xml";
+        favicon.href = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(faviconSvg);
+
+        document.head.appendChild(favicon);
+    </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -184,20 +203,20 @@
         }
 
         .content-card {
-    animation: fadeIn 0.4s ease-in-out;
-}
+            animation: fadeIn 0.4s ease-in-out;
+        }
 
-@@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 
 </head>

@@ -137,6 +137,14 @@
 
                             </a>
 
+                            <a href="@Url.Action("Cancelar", new { id = item.IdPedido })"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('¿Seguro que desea cancelar el pedido?');">
+
+                                <i class="bi bi-x-circle"></i>
+
+                            </a>
+
                         </td>
 
                     </tr>
@@ -159,9 +167,9 @@
             $('#tablaPedidos').DataTable({
 
                 pageLength: 10,
-                searching: false,
-                lengthChange: false,
-                info: false,
+                searching: true,
+                lengthChange: true,
+                info: true,
 
                 order: [
                     [0, "asc"], // prioridad

@@ -66,6 +66,22 @@ namespace GestionLogisticaTI.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult Cancelar(int id)
+        {
+            using (SqlConnection conn = ConexionBD.ObtenerConexion())
+            {
+                SqlCommand cmd = new SqlCommand("sp_Pedido_Cancelar", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@idPedido", id);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+
+            return RedirectToAction("Index");
+        }
+
         public ActionResult Detalle(int id)
         {
             PedidoAutorizacionViewModel model = new PedidoAutorizacionViewModel();

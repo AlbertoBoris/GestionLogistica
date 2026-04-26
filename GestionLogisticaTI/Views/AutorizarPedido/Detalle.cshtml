@@ -122,6 +122,15 @@
 
     </a>
 
+    <a href="@Url.Action("Cancelar", new { id = Model.IdPedido })"
+       class="btn btn-danger"
+       onclick="return confirm('¿Seguro que desea cancelar el pedido?');">
+
+        <i class="bi bi-x-circle"></i>
+        Cancelar Pedido
+
+    </a>
+
     <a href="@Url.Action("Index")"
        class="btn btn-secondary">
 
