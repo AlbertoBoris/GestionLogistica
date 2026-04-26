@@ -56,6 +56,13 @@ Si aparecen errores de dependencias ejecutar en Package Manager Console:
 
 Update-Package -reinstall
 
+# Accesos
+* logistica@empresa.com / 123456
+* ventas@empresa.com / 123456
+* almacen@empresa.com / 123456
+* jefearea@empresa.com / 123456
+* admin@empresa.com / 123456
+
 ## Autor
 
 Proyecto desarrollado por estudiantes de Conputación e Informatica.
